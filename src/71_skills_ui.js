@@ -36,7 +36,7 @@ function renderSkills(){
     /* one line: name · standing · mastery bar · exam and drill record; details (answers, variants, trend) on tap */
     d.innerHTML=`<summary class="srow"><b>${esc(catName(c))}</b><span>${chipOf(st)}</span>`+
       `<div class="bar"><i class="${st.status}" style="width:${Math.max(4,Math.round(st.score*100))}%"></i></div>`+
-      `<em title="exams · drills">${st.exR}/${st.exN} · ${st.drR}/${st.drN}</em></summary><div class="skillin"><span class="dots">${dots}</span>${inner}</div>`;
+      `<em title="Right / tried: mock exams · drills">${st.exR}/${st.exN} · ${st.drR}/${st.drN}</em></summary><div class="skillin"><span class="dots">${dots}</span>${inner}</div>`;
     list.appendChild(d);
   });
   list.querySelectorAll('[data-drill]').forEach(b=>{ b.onclick=()=>drOpen([+b.dataset.drill]); });

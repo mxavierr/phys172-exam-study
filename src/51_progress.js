@@ -124,12 +124,13 @@ function renderProg(){
     .sort((a,b)=>a.cat.localeCompare(b.cat)||a.hw-b.hw||b.seen-a.seen)
     .forEach(r=>{
       const idea=keyIdea(r.id), tr=document.createElement('tr');
-      tr.innerHTML=`<td>${esc(r.cat)}${idea?`<span class="how">${esc(idea)}</span>`:''}</td>`+
+      tr.innerHTML=`<td>${esc(r.cat)}${idea?`<span class="how">${mathText(idea)}</span>`:''}</td>`+
         `<td class="hwcol">${r.hw?hwLabel(r.hw):'–'}</td><td class="num">${r.seen}</td>`+
         `<td class="num">${r.right}</td><td class="num">${r.slow}</td>`+
         `<td class="num">${r.seen?fmtClock(r.time/r.seen):'–'}</td>`;
       ab.appendChild(tr);
     });
+  typeset(ab);
 }
 /* where progress is kept; msg replaces the label briefly (import result) */
 function paintStoreNote(msg){

@@ -1,6 +1,6 @@
 /* ==== 12 · UI kit ========================================================
    Screen switching and timers, text escaping, clock format, worked-solution
-   HTML + KaTeX, the line chart, and the multiple-choice pieces shared by
+   HTML + KaTeX, math inside sentences, the line chart, and the multiple-choice pieces shared by
    the mock exam and the drill.
    ======================================================================== */
 const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
@@ -89,7 +89,7 @@ function solHTML(r,open,extra){
   };
   const steps=sol.map((s,i)=>`<li>${s[0]?`<p>${s[0]}</p>`:''}${s[1]?lines(s[1],i===lastTex):''}</li>`).join('');
   return `<details class="sol"${open===false?'':' open'}><summary>Worked solution</summary>`+
-         (r.how?`<p class="key">Key idea: ${r.how}</p>`:'')+`<ol class="steps">${steps}</ol></details>`;
+         (r.how?`<p class="key">Key idea: ${mathText(r.how)}</p>`:'')+`<ol class="steps">${steps}</ol></details>`;
 }
 const TEX_OPTS={displayMode:true,throwOnError:false,strict:'ignore',output:'html',
   macros:{'\\given':'\\htmlClass{tx-given}{#1}','\\find':'\\htmlClass{tx-find}{#1}','\\result':'\\htmlClass{tx-result}{#1}'},
@@ -101,11 +101,74 @@ function typeset(el){
   const go=()=>{
     if(window.katex&&typeof window.katex.render==='function'){
       el.querySelectorAll('.eq.raw').forEach(e=>{ try{ e.innerHTML=window.katex.renderToString(e.textContent,TEX_OPTS); e.classList.remove('raw'); }catch(err){} });
+      el.querySelectorAll('.tx.raw').forEach(e=>{ try{ e.innerHTML=window.katex.renderToString(e.dataset.tex,TEX_INLINE); e.classList.remove('raw'); }catch(err){} });
     }else if(++tries<120) setTimeout(go,150);
   };
   go();
 }
 function clearMath(el){ el.innerHTML=''; }
+
+/* ---- math inside plain sentences (key ideas, "why it's tempting", tooltips) ----
+   Those strings are written as plain text ("K_f = K_i + W₁", "½k_s s²"). mathText() finds the formula
+   runs between the words and renders each with KaTeX inline, so a subscript shows as a subscript
+   instead of "_". A word is part of a formula when it holds an operator, sub/superscript, Greek letter
+   or digit, or is a lone letter / vowel-less letter group ("mgh", "kQq"); English words end the run.
+   Before KaTeX has loaded, runs show with <sub> and are upgraded by typeset(). */
+const MATH_CH=/[=+−±·×/²³⁰¹⁴-⁹⁻_½√α-ωΓΔΘΛΞΠΣΦΨΩ≈≤≥<>⇔→₀-₉|0-9]/;
+const SUP={'⁰':'0','¹':'1','²':'2','³':'3','⁴':'4','⁵':'5','⁶':'6','⁷':'7','⁸':'8','⁹':'9','⁻':'-'};
+const SUB={'₀':'0','₁':'1','₂':'2','₃':'3','₄':'4','₅':'5','₆':'6','₇':'7','₈':'8','₉':'9'};
+const TEX_SYM={'½':'\\tfrac{1}{2}','−':'-','±':'\\pm ','·':'\\cdot ','×':'\\times ','≈':'\\approx ','≤':'\\le ','≥':'\\ge ',
+  '⇔':'\\Leftrightarrow ','→':'\\to ','%':'\\%','&':'\\&','#':'\\#','$':'\\$','ε':'\\varepsilon ','ς':'\\varsigma '};
+'alpha beta gamma delta epsilon zeta eta theta iota kappa lambda mu nu xi omicron pi rho - sigma tau upsilon phi chi psi omega'.split(' ')
+  .forEach((n,i)=>{ const c=String.fromCharCode(0x3B1+i); if(n!=='-'&&!TEX_SYM[c]) TEX_SYM[c]=n==='omicron'?'o':'\\'+n+' '; });
+'Gamma Delta Theta Lambda Xi Pi Sigma Phi Psi Omega'.split(' ').forEach(n=>{ TEX_SYM[{Gamma:'Γ',Delta:'Δ',Theta:'Θ',Lambda:'Λ',Xi:'Ξ',Pi:'Π',Sigma:'Σ',Phi:'Φ',Psi:'Ψ',Omega:'Ω'}[n]]='\\'+n+' '; });
+const isMathWord=w=>{
+  const c=w.replace(/^\(+/,'').replace(/[)]*[,.;:!?]*$/,'');
+  if(!c) return /^[(+−=]+$/.test(w);
+  if(c==='a') return false;                                    /* the article, not acceleration */
+  return MATH_CH.test(c)||/^[A-Za-z]$/.test(c)||(/^[A-Za-z]{2,5}$/.test(c)&&!/[aeiouyAEIOUY]/.test(c))||/^(sin|cos|tan|ln)$/.test(c);
+};
+function plainToTex(s){
+  let t=s.replace(/√\(([^()]*)\)/g,'\\sqrt{$1}').replace(/√([A-Za-z0-9]+)/g,'\\sqrt{$1}');
+  t=t.replace(/[⁰¹²³⁴-⁹⁻]+/g,m=>'^{'+[...m].map(c=>SUP[c]).join('')+'}')
+     .replace(/[₀-₉]+/g,m=>'_{'+[...m].map(c=>SUB[c]).join('')+'}');
+  t=t.replace(/[½−±·×≈≤≥⇔→α-ωΓΔΘΛΞΠΣΦΨΩ%&#$]/g,c=>TEX_SYM[c]||c);
+  t=t.replace(/\b(sin|cos|tan|ln)\b/g,'\\$1 ');
+  return t.replace(/_([A-Za-z]{2,})/g,'_{\\text{$1}}').replace(/_([A-Za-z0-9])(?![A-Za-z0-9{])/g,'_{$1}');
+}
+const subHTML=s=>esc(s).replace(/_([A-Za-z0-9α-ω]+)/g,'<sub>$1</sub>');
+const TEX_INLINE={displayMode:false,throwOnError:true,strict:'ignore',output:'html'};
+function texInline(src){
+  const tex=plainToTex(src);
+  if(window.katex&&typeof window.katex.renderToString==='function'){
+    try{ return `<span class="tx">${window.katex.renderToString(tex,TEX_INLINE)}</span>`; }catch(e){ return subHTML(src); }
+  }
+  return `<span class="tx raw" data-tex="${esc(tex).replace(/"/g,'&quot;')}">${subHTML(src)}</span>`;
+}
+function mathText(s){
+  const words=String(s==null?'':s).split(/(\s+)/), out=[];
+  let run=[];
+  const flush=()=>{
+    if(!run.length) return;
+    let src=run.join('').trim(), pre='', post='';
+    const m=src.match(/[,.;:!?]+$/); if(m){ post=m[0]; src=src.slice(0,-post.length); }
+    const op=src.match(/\s+[=+−⇔]+$/); if(op){ post=op[0]+post; src=src.slice(0,-op[0].length); }   /* "A =" then words */
+    const bal=()=>(src.match(/\(/g)||[]).length-(src.match(/\)/g)||[]).length;
+    while(bal()>0&&src[0]==='('){ pre+='('; src=src.slice(1); }
+    while(bal()<0&&src.endsWith(')')){ post=')'+post; src=src.slice(0,-1); }
+    const trail=run[run.length-1].match(/\s+$/);
+    out.push(esc(pre)+(bal()===0&&/[A-Za-z0-9α-ωΓΔΘΛΞΠΣΦΨΩ]/.test(src)?texInline(src):subHTML(src))+esc(post)+(trail?trail[0]:''));
+    run=[];
+  };
+  words.forEach(w=>{
+    if(/^\s+$/.test(w)){ if(run.length) run.push(w); else out.push(w); return; }
+    if(!isMathWord(w)){ flush(); out.push(subHTML(w)); return; }
+    run.push(w);
+    if(/[,;:!?]$|[^0-9]\.$/.test(w)) flush();                    /* punctuation ends a formula */
+  });
+  flush();
+  return out.join('');
+}
 
 /* ---- figures: one tinted, dotted panel. On wide screens it sits in the right-hand column (prefix+'aside'),
    on phones inline after the question text (prefix+'fig'); both get the same SVG. ---- */
@@ -130,7 +193,7 @@ function optionButtons(box,it,chosen,onPick){
     b.onclick=()=>onPick(k); box.appendChild(b);
   });
 }
-const whyHTML=(it,k,cls)=>k>=0&&k!==it.key&&it.opts[k]&&it.opts[k].why?`<span class="${cls||'whyno'}">Why ${LET[k]} is tempting: ${it.opts[k].why}</span>`:'';
+const whyHTML=(it,k,cls)=>k>=0&&k!==it.key&&it.opts[k]&&it.opts[k].why?`<span class="${cls||'whyno'}">Why ${LET[k]} is tempting: ${mathText(it.opts[k].why)}</span>`:'';
 const restartAnim=el=>{ el.classList.remove('rise'); void el.offsetWidth; el.classList.add('rise'); };
 
 /* ---- trend charts: one measure each, never two on one pair of axes ---- */

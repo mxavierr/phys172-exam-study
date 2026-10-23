@@ -8,6 +8,15 @@ const on=(id,fn)=>{ const el=$(id); if(!el) throw new Error('wiring: no element 
 const goHome=()=>{ show('start'); paintBest('bestline'); xBoot(); };
 const onKeyActivate=(el,fn)=>{ el.onkeydown=e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); fn(e); } }; };
 
+/* ---- the logo: home from anywhere. A sprint in play ends and is saved (as Esc does);
+   an exam in progress is saved and offered for resume; drills save after every answer. ---- */
+on('home',()=>{
+  if(phase==='start') return;
+  if(phase==='play') endGame();
+  else if(phase==='exam'&&XE&&!XE.done){ xLog(); xSave(); }
+  goHome();
+});
+
 /* ---- start screen + sprint ---- */
 on('go',startGame);
 on('goTop',startGame);

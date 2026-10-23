@@ -77,8 +77,8 @@ function buildGroups(){
     const topics=TOPICS.filter(gr.test);
     const wrap=document.createElement('div'); wrap.className='group';
     wrap.innerHTML=`<div class="grouphead"><b>${gr.name}</b>`+
-      `<span class="acts"><button class="link" data-g="${gr.key}" data-act="all">all</button>`+
-      `<button class="link" data-g="${gr.key}" data-act="none">none</button></span></div>`;
+      `<span class="acts"><button class="link" data-g="${gr.key}" data-act="all" data-tip="Include every ${gr.name} topic">all</button>`+
+      `<button class="link" data-g="${gr.key}" data-act="none" data-tip="Leave out every ${gr.name} topic">none</button></span></div>`;
     const chips=document.createElement('div'); chips.className='chips';
     topics.forEach(t=>{
       const c=document.createElement('div');
@@ -86,6 +86,8 @@ function buildGroups(){
       c.setAttribute('role','button'); c.tabIndex=0;
       c.setAttribute('aria-pressed',active.has(t)?'true':'false');
       c.innerHTML=`${t}<small>${hwRange(TOPIC_HW[t])}</small>`;
+      const n=GEN.filter(g=>g.cat===t).length;
+      c.dataset.tip=`${n} problem type${n===1?'':'s'} from ${hwRange(TOPIC_HW[t])}. Click to include or leave out.`;
       const toggle=()=>{
         if(active.has(t)){ if(active.size===1)return; active.delete(t); } else active.add(t);
         syncChips();

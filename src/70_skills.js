@@ -107,7 +107,11 @@ function statOf(list,now){
 }
 const STL={new:'Not seen',weak:'Weak',shaky:'Shaky',solid:'Solid',mastered:'Mastered'};
 const STO={weak:0,shaky:1,new:2,solid:3,mastered:4};
-const chipOf=st=>`<span class="status ${st.status}">${STL[st.status]}</span>`+(st.gap?'<span class="status gapb">exam gap</span>':'');
+const STTIP={new:'No answers yet',weak:'Below 45%: weighted across your exams and drills, recent answers count most',
+  shaky:'45–70%: getting there, not yet reliable',solid:'70% or more, and the latest exam got it right',
+  mastered:'75% or more, and right on each of the last two exams that included it'};
+const chipOf=st=>`<span class="status ${st.status}" data-tip="${STTIP[st.status]}">${STL[st.status]}</span>`+
+  (st.gap?'<span class="status gapb" data-tip="Right in recent drills but missed on the latest exam">exam gap</span>':'');
 
 /* ---- what the exam history says, beyond one question at a time ---- */
 function findPatterns(evs){

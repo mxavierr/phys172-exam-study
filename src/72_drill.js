@@ -48,7 +48,8 @@ function drPicker(pre){
     const st=statOf(evs.filter(e=>e.c===c)), d=document.createElement('div');
     d.className='chip'+(DSEL.has(c)?' on':''); d.setAttribute('role','button'); d.tabIndex=0; d.setAttribute('aria-pressed',DSEL.has(c)?'true':'false');
     const sug=rec.top.find(r=>r.c===c);
-    if(sug){ d.classList.add('sug'); d.title='Suggested: '+sug.why; }
+    if(sug) d.classList.add('sug');
+    d.dataset.tip=(sug?'Suggested: '+sug.why+'. ':'')+(st.n?`${STL[st.status]}: ${STTIP[st.status].toLowerCase()}`:'Not tried yet')+'. Click to include or leave out.';
     d.innerHTML=`<span class="cn">Q${c+1}</span>${esc(s.name)}<small class="st ${st.status}">${st.n?STL[st.status].toLowerCase():''}</small>`;
     const tog=()=>{ DTOUCHED=true; DSEL.has(c)?DSEL.delete(c):DSEL.add(c); d.classList.toggle('on',DSEL.has(c)); d.setAttribute('aria-pressed',DSEL.has(c)?'true':'false'); drPickNote(); };
     d.onclick=tog; d.onkeydown=e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); tog(); } };

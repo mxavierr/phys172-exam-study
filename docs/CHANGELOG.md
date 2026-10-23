@@ -2,6 +2,22 @@
 
 Newest first. Every published change gets an entry: what changed, why, and how it was checked.
 
+## v3.3 · 2026-10-23 · CRAMM: new name, logo, tooltips, math in sentences
+* Renamed **CRAMM** (page title, header, install name). Stored names (`energy-sprint` keys, `es_save`
+  cookie) are unchanged, so everyone's saved progress carries over.
+* New "Dot Grid B" logo in the header, and it is the **home button** from any screen. A sprint in play
+  ends and is saved (as Esc does), and a mock exam in progress is kept and offered for resume. New
+  favicon, Apple touch icon, install icons and `site.webmanifest` from the same kit.
+* Header: large name next to the logo; "PHYS 172 · Module 2" moved to a small label on the right.
+* Footer text removed.
+* **Hover explanations** (`13_tips.js`): one shared tooltip for every button, chip, timer, status chip
+  and key number, on mouse hover or keyboard focus. Existing `title` hints use it too.
+* **Math inside sentences** (`mathText` in `12_ui.js`): key ideas, "why it's tempting" lines, the
+  progress table and tooltips render their formulas with KaTeX inline (`K_f` shows as K with subscript f,
+  `½mv²` as a fraction), instead of showing raw `_`.
+* Checked: full suite passes; `t_latex.py` now also renders every key idea and trap explanation (~420)
+  with 0 raw underscores or KaTeX errors; new UI checks for the header, the home button and tooltips.
+
 ## v3.2 · 2026-10-23 · public static site
 * **Storage without accounts.** Account sync is gone; progress stays in the student's browser.
   The full history is in localStorage, and a compressed copy (newest records first, mock exams kept

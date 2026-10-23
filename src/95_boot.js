@@ -49,7 +49,7 @@ window.EnergySprint={APP,K,GEN,TOPICS,LEVEL,FIG,XSLOTS,buildExam,parseNum,close,
   _advance:sec=>{ t0-=sec*1000; paintClock(); },
   _ageQ:sec=>{ if(cur){ cur.shown-=sec*1000; paintClock(); } },
   _skills:{events,statOf,findPatterns,recommend,xSub,tagsOf,genCat,CSUBS,SUBL,XPACE,drCleared:c=>drCleared(c)},
-  _tex:{solHTML,TEX_OPTS,markGivens},
+  _tex:{solHTML,TEX_OPTS,markGivens,mathText},
   _drill:()=>DR, _drPick:k=>drPick(k), _drAge:sec=>{ if(DR) DR.shown-=sec*1000; },
   _exam:()=>XE, _xage:sec=>{ if(XE){ XE.deadline-=sec*1000; XE.t0-=sec*1000; xClock(); } }};
 })();

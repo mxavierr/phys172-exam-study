@@ -42,7 +42,8 @@ closes it. Order matters only for code that runs at load time (e.g. `TOPICS` rea
 | `02_body.html` | markup for every screen. Each `<section>` directly in `.wrap` is one screen; its id is the phase name |
 | `10_core.js` | `APP` (storage names), `LS()`, `lsGet/Set/Del`, `cookieGet/Set`, constants `K`, random + number formatting (`sci`, `tn`, `U`), generator registry `add()` |
 | `11_figs.js` | `FIG` SVG figures (see §5) |
-| `12_ui.js` | `show()` + named timers, `armButton`, semantic marking (`markGivens`, `markFinal`), `solHTML`, `typeset` (KaTeX), `showFigure`, multiple-choice helpers, `lineChart` |
+| `12_ui.js` | `show()` + named timers, `armButton`, semantic marking (`markGivens`, `markFinal`), `solHTML`, `typeset` (KaTeX), `mathText` (formulas inside plain sentences → inline KaTeX), `showFigure`, multiple-choice helpers, `lineChart` |
+| `13_tips.js` | the shared hover/focus tooltip: any element with `data-tip` (or `title`) |
 | `20–23_gen_*.js` | sprint generators by homework |
 | `30_exam_gen.js` | `XSLOTS` (name + pace per slot), `x1…x1415` slot generators, `xTrackSet`, `xLaunchSet`, `buildExam` |
 | `40_sprint.js` | sprint engine; pace constants `TARGET`, `BUDGET` |
@@ -52,7 +53,7 @@ closes it. Order matters only for code that runs at load time (e.g. `TOPICS` rea
 | `70_skills.js` | taxonomy (variants, traits) and analytics (`statOf`, `findPatterns`, `recommend`); no DOM |
 | `71_skills_ui.js` | exam-skills section of the progress page; "by problem type" on exam results |
 | `72_drill.js` | adaptive drill |
-| `90_wiring.js` | every static button handler + the single keyboard dispatcher |
+| `90_wiring.js` | every static button handler (including the logo = home) + the single keyboard dispatcher |
 | `95_boot.js` | boot, sprint resume snapshot, test hook `window.EnergySprint` |
 
 ## 3. Design system: "Warm Swiss"
@@ -76,6 +77,10 @@ variables). Layout: flush-left, 7/5 split for question screens (figure in the ri
 920 px; inline below the question on phones), 1.5–2 px ink rules instead of boxes, no shadows,
 96 px light numerals for question numbers, 12 px rounded rows, pill buttons.
 Timers past pace or nearly out are shown **inverted (ink pill)**, never red: red means wrong.
+
+**Explanations live in tooltips.** Give every button and every non-obvious number a `data-tip` (one or
+two plain sentences: what it does, and any consequence). Write formulas in tips, key ideas (`how`) and
+trap explanations (`why`) as plain text (`K_f = K_i + W`, `½mv²`): `mathText` renders them.
 
 **Words are a cost.** Screens carry no instructions or rule lists: a choice is shown as a tile, chip or
 number, state as color/icon (✓ ✕, ● on-chip, marigold ring = suggested, blue bracket = shared setup),

@@ -8,19 +8,20 @@
 <div class="wrap">
 
 <header class="apphead">
-  <div class="brand">
-    <svg class="mark" width="44" height="22" viewBox="0 0 44 22" aria-hidden="true"><circle cx="11" cy="11" r="10"/><rect x="22" y="1" width="20" height="20"/></svg>
-    <div class="brandtext"><span class="eyebrow">PHYS 172 · Module 2</span><span class="apptitle">Energy Sprint</span></div>
-  </div>
+  <button class="brand" id="home" type="button" aria-label="CRAMM: home" data-tip="Home">
+    <svg class="logo" viewBox="20 10 80 100" aria-hidden="true"><g class="lg-grid"><circle cx="30" cy="20" r="2.5"/><circle cx="50" cy="20" r="2.5"/><circle cx="70" cy="20" r="2.5"/><circle cx="90" cy="20" r="2.5"/><circle cx="30" cy="40" r="2.5"/><circle cx="50" cy="40" r="2.5"/><circle cx="70" cy="40" r="2.5"/><circle cx="90" cy="40" r="2.5"/><circle cx="30" cy="60" r="2.5"/><circle cx="50" cy="60" r="2.5"/><circle cx="70" cy="60" r="2.5"/><circle cx="90" cy="60" r="2.5"/><circle cx="30" cy="80" r="2.5"/><circle cx="50" cy="80" r="2.5"/><circle cx="70" cy="80" r="2.5"/><circle cx="90" cy="80" r="2.5"/><circle cx="30" cy="100" r="2.5"/><circle cx="50" cy="100" r="2.5"/><circle cx="70" cy="100" r="2.5"/><circle cx="90" cy="100" r="2.5"/></g><g class="lg-ink"><circle cx="30" cy="20" r="8.5"/><circle cx="50" cy="20" r="8.5"/><circle cx="70" cy="20" r="8.5"/><circle cx="30" cy="40" r="8.5"/><circle cx="30" cy="60" r="8.5"/><circle cx="50" cy="60" r="8.5"/><circle cx="70" cy="60" r="8.5"/><circle cx="30" cy="80" r="8.5"/><circle cx="30" cy="100" r="8.5"/><circle cx="50" cy="100" r="8.5"/></g><circle class="lg-given" cx="90" cy="40" r="8.5"/><circle class="lg-find" cx="90" cy="80" r="8.5"/><circle class="lg-ok" cx="70" cy="100" r="8.5"/></svg>
+    <span class="apptitle">CRAMM</span>
+  </button>
+  <span class="eyebrow course">PHYS 172 · Module 2</span>
 </header>
 
 <!-- ===================== START ===================== -->
 <section id="start">
   <div class="modes">
-    <button class="mode" id="goTop"><svg class="ico"><use href="#i-clock"/></svg><b>Sprint</b><span>Typed · timed</span></button>
-    <button class="mode" id="toExam"><svg class="ico"><use href="#i-exam"/></svg><b>Mock exam</b><span>15 Q · 70:00</span></button>
-    <button class="mode" id="toDrill"><svg class="ico"><use href="#i-target"/></svg><b>Drill</b><span>Untimed · adaptive</span></button>
-    <button class="mode" id="toProg"><svg class="ico"><use href="#i-chart"/></svg><b>Progress</b><span>Skills · history</span></button>
+    <button class="mode" id="goTop" data-tip="Timed, typed answers with fresh numbers every time. Set the length and topics below."><svg class="ico"><use href="#i-clock"/></svg><b>Sprint</b><span>Typed · timed</span></button>
+    <button class="mode" id="toExam" data-tip="15 multiple-choice questions in the Exam 2 order, 70 minutes, scored out of 240."><svg class="ico"><use href="#i-exam"/></svg><b>Mock exam</b><span>15 Q · 70:00</span></button>
+    <button class="mode" id="toDrill" data-tip="No clock. Practice the problem types you miss until each one is cleared."><svg class="ico"><use href="#i-target"/></svg><b>Drill</b><span>Untimed · adaptive</span></button>
+    <button class="mode" id="toProg" data-tip="Your standing on each exam problem type, weak spots, and every past sprint, exam and drill."><svg class="ico"><use href="#i-chart"/></svg><b>Progress</b><span>Skills · history</span></button>
   </div>
   <div class="resume" id="xresume" hidden></div>
   <div class="notice" id="cookienote" hidden>
@@ -31,20 +32,20 @@
   <h2>Sprint</h2>
   <div class="setrow">
     <div class="chips" id="durchips">
-      <div class="chip" data-dur="180" role="button" tabindex="0">3 min</div>
-      <div class="chip on" data-dur="300" role="button" tabindex="0">5 min</div>
-      <div class="chip" data-dur="600" role="button" tabindex="0">10 min</div>
+      <div class="chip" data-dur="180" role="button" tabindex="0" data-tip="3-minute sprint">3 min</div>
+      <div class="chip on" data-dur="300" role="button" tabindex="0" data-tip="5-minute sprint">5 min</div>
+      <div class="chip" data-dur="600" role="button" tabindex="0" data-tip="10-minute sprint">10 min</div>
     </div>
-    <div class="chips"><div class="chip on" id="bonuschip" role="button" tabindex="0" aria-pressed="true" title="Correct answers under 4:00 add time">+ Time bonus</div></div>
+    <div class="chips"><div class="chip on" id="bonuschip" role="button" tabindex="0" aria-pressed="true" data-tip="Each correct answer under 4:00 adds time to the clock: 1 minute plus the time you had left on the 4:00 pace.">+ Time bonus</div></div>
   </div>
   <div class="presets">
-    <button class="link" id="examFocus">Exam 2 topics</button>
-    <button class="link" id="allTopics">All</button>
+    <button class="link" id="examFocus" data-tip="Only the topics on the Exam 2 list (leaves out particle energy, identity change and power)">Exam 2 topics</button>
+    <button class="link" id="allTopics" data-tip="Every topic">All</button>
   </div>
   <div id="groups"></div>
   <div class="btnrow">
-    <button id="go">Start ▸</button>
-    <span class="best" id="bestline"></span>
+    <button id="go" data-tip="Start with the length and topics selected above">Start ▸</button>
+    <span class="best" id="bestline" data-tip="Your best score for this length, topic set and bonus setting"></span>
   </div>
 </section>
 
@@ -52,11 +53,11 @@
 <section id="play" hidden>
   <div class="clock">
     <div class="clockhead">
-      <div class="bigtime" id="time">5:00</div>
-      <span class="pill qtime" title="Time on this question"><svg class="ico sm"><use href="#i-clock"/></svg><b id="qtimer">0:00</b></span>
+      <div class="bigtime" id="time" data-tip="Time left. After 0:00 it counts overtime and your next answer ends the sprint. Esc ends it now.">5:00</div>
+      <span class="pill qtime" data-tip="Time on this question. It turns dark past the pace for this difficulty: Easy 2:00, Medium 4:00, Hard 6:00."><svg class="ico sm"><use href="#i-clock"/></svg><b id="qtimer">0:00</b></span>
     </div>
     <div class="gauge"><div class="fill" id="fill"></div><div class="ticks" id="ticks"></div></div>
-    <div class="consts" aria-label="Constants">
+    <div class="consts" aria-label="Constants" data-tip="Constants this sprint uses">
       <div><span>g</span> 9.8 N/kg</div>
       <div><span>G</span> 6.67×10<sup>−11</sup></div>
       <div><span>1/4πε₀</span> 9×10<sup>9</sup></div>
@@ -71,15 +72,15 @@
   <div class="qgrid" id="qcard">
     <div class="qmain">
       <div class="qnum"><span class="bignum" id="qbig">01</span>
-        <span class="tags"><span class="tag" id="tag">Topic</span><span class="hw" id="hwtag">HW11</span><span class="lvl" id="lvl"></span></span></div>
+        <span class="tags"><span class="tag" id="tag">Topic</span><span class="hw" id="hwtag" data-tip="The homework set this problem type comes from">HW11</span><span class="lvl" id="lvl" data-tip="Difficulty: Easy ×1 (10 pts), Medium ×2 (20 pts), Hard ×3 (30 pts)"></span></span></div>
       <p class="qtext" id="qtext"></p>
       <div class="qfig inline" id="qfig" hidden></div>
       <div class="answerrow">
         <input type="text" id="ans" inputmode="text" autocomplete="off" autocapitalize="off"
-               spellcheck="false" aria-label="Your answer" placeholder="e.g. 4.9 or 8.6e-7">
+               spellcheck="false" aria-label="Your answer" data-tip="A number: 4.9, −3, 8.6e-7 or 8.6×10^-7. Within 2% counts as correct; the unit is already given." placeholder="e.g. 4.9 or 8.6e-7">
         <div class="unit" id="unit"></div>
-        <button id="submit">Enter</button>
-        <button id="skip" class="ghost">Skip</button>
+        <button id="submit" data-tip="Check your answer (Enter)">Enter</button>
+        <button id="skip" class="ghost" data-tip="Show the answer and move on. Counts as a miss.">Skip</button>
       </div>
       <div class="verdict" id="verdict" aria-live="polite"></div>
     </div>
@@ -127,9 +128,9 @@
   <div id="missedwrap"><h2>Review</h2><ol class="missed" id="missed"></ol></div>
 
   <div class="btnrow">
-    <button id="again">Again ▸</button>
-    <button id="back" class="ghost">Home</button>
-    <button id="toProg2" class="ghost">Progress</button>
+    <button id="again" data-tip="Another sprint with the same settings">Again ▸</button>
+    <button id="back" class="ghost" data-tip="Back to the start screen">Home</button>
+    <button id="toProg2" class="ghost" data-tip="See this run in your history">Progress</button>
   </div>
 </section>
 
@@ -142,10 +143,10 @@
     <div class="stat"><b>240</b><span>points</span></div>
     <div class="stat"><b>10</b><span class="nocase">g in m/s²</span></div>
   </div>
-  <div class="slotmap" id="slotmap" aria-label="Question order; linked sets share a setup"></div>
+  <div class="slotmap" id="slotmap" aria-label="Question order; linked sets share a setup" data-tip="Question order. Bracketed questions share one setup."></div>
   <div class="btnrow">
-    <button id="xbegin">Begin ▸</button>
-    <button id="xback" class="ghost">Back</button>
+    <button id="xbegin" data-tip="Start the 70-minute clock. You can close the page and resume, but the clock keeps running.">Begin ▸</button>
+    <button id="xback" class="ghost" data-tip="Back to the start screen">Back</button>
   </div>
 </section>
 
@@ -155,12 +156,12 @@
     <div class="qheadtext"><span class="eyebrow">Mock Exam 2</span><span class="qtitle" id="xtag"></span></div>
     <div class="qheadmeta">
       <span class="mono">Q <b id="xqn">01</b> / 15</span>
-      <span class="pill" id="xclockpill"><svg class="ico sm"><use href="#i-clock"/></svg><b id="xtime">70:00</b></span>
+      <span class="pill" id="xclockpill" data-tip="Time left. The exam submits itself at 0:00."><svg class="ico sm"><use href="#i-clock"/></svg><b id="xtime">70:00</b></span>
     </div>
   </div>
   <div class="gauge thin"><div class="fill" id="xfill"></div></div>
-  <div class="qcount xcount"><span id="xcount">0 / 15</span><b id="xpace"></b></div>
-  <nav class="xnav" id="xnav" aria-label="Questions"></nav>
+  <div class="qcount xcount"><span id="xcount">0 / 15</span><b id="xpace" data-tip="Time left divided by the questions you have not answered"></b></div>
+  <nav class="xnav" id="xnav" aria-label="Questions" data-tip="Jump to a question. Dark = answered, marigold = current, dot = flagged."></nav>
   <div class="qgrid" id="xcard">
     <div class="qmain">
       <div class="qnum"><span class="bignum" id="xbig">01</span><span class="eyebrow" id="xnum">16 pts</span></div>
@@ -169,10 +170,10 @@
       <div class="qfig inline" id="xfig" hidden></div>
       <div class="xopts" id="xopts" role="radiogroup" aria-label="Answer choices"></div>
       <div class="btnrow xctl">
-        <button id="xprev" class="ghost" aria-label="Previous question">←</button>
-        <button id="xnext">Next →</button>
-        <button id="xflag" class="ghost">Flag</button>
-        <button id="xsubmit" class="ghost push">Submit</button>
+        <button id="xprev" class="ghost" aria-label="Previous question" data-tip="Previous question (←)">←</button>
+        <button id="xnext" data-tip="Next question (→). Answer with the A–E keys; tap an answer again to clear it.">Next →</button>
+        <button id="xflag" class="ghost" data-tip="Mark this question to come back to (F)">Flag</button>
+        <button id="xsubmit" class="ghost push" data-tip="Finish and see your score. Asks for a second tap.">Submit</button>
       </div>
       <p class="xnote">g = 10 m/s² · k = 9×10⁹ N·m²/C² · e = 1.6×10⁻¹⁹ C</p>
     </div>
@@ -196,13 +197,13 @@
     </tr></thead><tbody></tbody></table>
   </div>
   <div id="xpat"></div>
-  <div class="btnrow"><button id="xdrill">Drill these ▸</button></div>
+  <div class="btnrow"><button id="xdrill" data-tip="Drill the problem types this exam shows you need">Drill these ▸</button></div>
   <h2>Review</h2>
   <ol class="missed xrev" id="xreview"></ol>
   <div class="btnrow">
-    <button id="xagain">New exam ▸</button>
-    <button id="xhome" class="ghost">Home</button>
-    <button id="toProg3" class="ghost">Progress</button>
+    <button id="xagain" data-tip="A new mock exam with fresh numbers">New exam ▸</button>
+    <button id="xhome" class="ghost" data-tip="Back to the start screen">Home</button>
+    <button id="toProg3" class="ghost" data-tip="See this exam in your history">Progress</button>
   </div>
 </section>
 
@@ -212,8 +213,8 @@
   <div class="legend chipkey"><span><i class="sug"></i>suggested</span><span>ends when each type is cleared</span></div>
   <div class="chips stack" id="dchips"></div>
   <div class="btnrow">
-    <button id="dbegin">Start ▸</button>
-    <button id="dback" class="ghost">Back</button>
+    <button id="dbegin" data-tip="Start drilling the selected types">Start ▸</button>
+    <button id="dback" class="ghost" data-tip="Back to the start screen">Back</button>
   </div>
 </section>
 
@@ -223,10 +224,10 @@
     <div class="qheadtext"><span class="eyebrow">Drill</span><span class="qtitle" id="dtag"></span></div>
     <div class="qheadmeta">
       <span class="mono" id="dcount">Q 1</span>
-      <span class="pill" id="dclockpill"><svg class="ico sm"><use href="#i-clock"/></svg><b id="dtime">0:00</b></span>
+      <span class="pill" id="dclockpill" data-tip="Time on this question. No limit; answers slower than exam pace count a little less."><svg class="ico sm"><use href="#i-clock"/></svg><b id="dtime">0:00</b></span>
     </div>
   </div>
-  <div class="drail" id="drail" aria-label="Progress on each type"></div>
+  <div class="drail" id="drail" aria-label="Progress on each type" data-tip="Each type is cleared after 3 right in a row (4 for hard types), at least 2 of them within exam pace."></div>
   <div class="qgrid" id="dcard">
     <div class="qmain">
       <div class="qnum"><span class="bignum" id="dbig">01</span><span class="eyebrow"><span id="dpace"></span> <span id="dpart"></span></span></div>
@@ -239,9 +240,9 @@
         <div id="dexplain"></div>
       </div>
       <div class="btnrow xctl">
-        <button id="dnext" hidden>Next →</button>
-        <button id="dskip" class="ghost">Don't know</button>
-        <button id="dstop" class="ghost push">End</button>
+        <button id="dnext" hidden data-tip="Next question (Enter)">Next →</button>
+        <button id="dskip" class="ghost" data-tip="Show the answer and the worked solution. Counts as a miss.">Don't know</button>
+        <button id="dstop" class="ghost push" data-tip="End the drill now and see the summary. Everything so far is saved.">End</button>
       </div>
       <p class="xnote">g = 10 m/s² · k = 9×10⁹ N·m²/C² · e = 1.6×10⁻¹⁹ C</p>
     </div>
@@ -264,9 +265,9 @@
     </tr></thead><tbody></tbody></table>
   </div>
   <div class="btnrow">
-    <button id="dagain">New drill ▸</button>
-    <button id="dhome" class="ghost">Home</button>
-    <button id="toProg4" class="ghost">Progress</button>
+    <button id="dagain" data-tip="Pick types for a new drill">New drill ▸</button>
+    <button id="dhome" class="ghost" data-tip="Back to the start screen">Home</button>
+    <button id="toProg4" class="ghost" data-tip="See this drill in your history">Progress</button>
   </div>
 </section>
 
@@ -278,10 +279,10 @@
 
   <div id="skills" hidden>
     <h2>Exam skills</h2>
-    <div class="legend"><span><i class="sq"></i>exam</span><span><i class="dt"></i>drill · ⅕ weight</span></div>
+    <div class="legend"><span><i class="sq"></i>exam</span><span data-tip="A drill answer counts one fifth as much as a mock-exam answer"><i class="dt"></i>drill · ⅕ weight</span></div>
     <div id="spat"></div>
     <div id="slist"></div>
-    <div class="btnrow"><button id="sdrill">Drill ▸</button></div>
+    <div class="btnrow"><button id="sdrill" data-tip="Drill the types suggested from your exams and drills">Drill ▸</button></div>
     <details class="fold">
       <summary>By trait</summary>
       <div class="tablebox">
@@ -323,12 +324,12 @@
       <div class="stat"><b id="pAcc">0%</b><span>accuracy</span></div>
       <div class="stat"><b id="pPace">&ndash;</b><span>per question</span></div>
     </div>
-    <div class="panel" id="projpanel"></div>
+    <div class="panel" id="projpanel" data-tip="Estimate from your sprint pace and accuracy: how many of 15 exam-style questions you would reach in 60 minutes, and get right"></div>
 
     <h3>Weak spots</h3>
     <div id="weak"></div>
     <div class="btnrow" id="sprintWeakRow" hidden>
-      <button id="sprintWeak">Sprint these ▸</button>
+      <button id="sprintWeak" data-tip="A sprint on just these weak topics">Sprint these ▸</button>
     </div>
 
     <h3>Accuracy</h3>
@@ -359,15 +360,14 @@
   </div>
 
   <div class="btnrow">
-    <button id="progback" class="ghost">Home</button>
-    <button id="exporthist" class="link" title="Save a backup file, e.g. to move to another device">Export</button>
-    <button id="importhist" class="link" title="Add progress from a backup file">Import</button>
+    <button id="progback" class="ghost" data-tip="Back to the start screen">Home</button>
+    <button id="exporthist" class="link" data-tip="Download a backup file of your progress, e.g. to move it to another device">Export</button>
+    <button id="importhist" class="link" data-tip="Add progress from a backup file (it merges, nothing is lost)">Import</button>
     <input type="file" id="importfile" accept=".json,application/json" hidden>
-    <button id="clearhist" class="link">Clear history</button>
+    <button id="clearhist" class="link" data-tip="Erase all saved progress on this device. Asks for a second tap.">Clear history</button>
     <span class="sync" id="storenote"></span>
   </div>
 </section>
 
-<footer class="foot">Unofficial practice tool · not affiliated with or endorsed by the course or university</footer>
 </div>
 <script>

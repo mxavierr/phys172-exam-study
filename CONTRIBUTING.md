@@ -1,4 +1,4 @@
-# Contributing to Energy Sprint
+# Contributing to CRAMM
 
 Read `docs/DEV_NOTES.md` before any change; log every change in `docs/CHANGELOG.md`.
 
@@ -20,7 +20,8 @@ Read `docs/DEV_NOTES.md` before any change; log every change in `docs/CHANGELOG.
   inline script (by hash) and Google Fonts; keep it that way.
 - Color = meaning (`docs/DESIGN_SPEC.md`): `--bad` red always comes with ✕ and a text label; marigold
   only for "you are here" and figure objects.
-- Minimal words on screen: prefer chips, tiles, numbers, icons; secondary info in `title` or a collapsed `<details>`.
+- Minimal words on screen: prefer chips, tiles, numbers, icons; explanations go in a `data-tip` tooltip or a collapsed `<details>`.
+  Every new button gets a `data-tip`.
 - Question HTML numbers use `sci/fm/vec`; LaTeX helpers (`tn`, `U`) only inside `sol`; units with `·²³` go through `U()`.
 - After touching generators run `t_content.py` + `t_latex.py`; after touching figures run `t_figs.py`;
   before finishing run `bash tests/run_all.sh`.

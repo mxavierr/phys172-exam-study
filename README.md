@@ -1,4 +1,4 @@
-# Energy Sprint
+# CRAMM
 
 Free practice for **PHYS 172 Module 2** (HW11–HW15, Exam 2) that runs in your browser.
 

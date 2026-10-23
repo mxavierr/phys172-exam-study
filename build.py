@@ -1,11 +1,11 @@
-"""Build Energy Sprint: join src/* in file-name order into one self-contained web page.
+"""Build CRAMM (internally "energy-sprint"): join src/* in file-name order into one self-contained web page.
 
   python3 -I build.py [outdir]          (default: dist/)
 
 Output (everything a static host such as GitHub Pages needs; upload the folder as is):
   index.html   the app: standards-mode page with a Content-Security-Policy
   katex/       KaTeX 0.16.11 script, stylesheet, woff2 fonts (from vendor/katex/)
-  favicon.svg  and anything else in static/
+  favicons, app icons, site.webmanifest: everything in static/
 
 The numeric prefixes ARE the load order (00 head, 01 css, 02 markup, 10..95 script, 99 close).
 00_head.html and 01_style.css go in <head>; the rest in <body>.
@@ -56,6 +56,7 @@ CSP = '; '.join([
     "font-src 'self' https://fonts.gstatic.com",
     "img-src 'self' data: blob:",
     "connect-src 'self'",
+    "manifest-src 'self'",
     "base-uri 'none'",
     "form-action 'none'",
     "object-src 'none'",

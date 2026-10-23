@@ -1,1 +1,17 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><rect width="32" height="32" rx="7" fill="#F3EDE2"/><circle cx="10" cy="16" r="7" fill="#2A5DA8"/><rect x="18" y="9" width="11" height="14" fill="#E9A93A"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32">
+  <style>
+    .t{fill:#F3EDE2}.k{fill:#1F1D1A}.b{fill:#2A5DA8}.o{fill:#B4461A}.g{fill:#2B7048}
+    @media (prefers-color-scheme: dark){.t{fill:#1F1D1A}.k{fill:#F3EDE2}.b{fill:#8CB0E8}.o{fill:#EE9466}.g{fill:#79C196}}
+  </style>
+  <rect class="t" width="32" height="32" rx="7"/>
+  <g class="k">
+    <circle cx="7" cy="4.5" r="2.7"/><circle cx="13" cy="4.5" r="2.7"/><circle cx="19" cy="4.5" r="2.7"/>
+    <circle cx="7" cy="10.25" r="2.7"/>
+    <circle cx="7" cy="16" r="2.7"/><circle cx="13" cy="16" r="2.7"/><circle cx="19" cy="16" r="2.7"/>
+    <circle cx="7" cy="21.75" r="2.7"/>
+    <circle cx="7" cy="27.5" r="2.7"/><circle cx="13" cy="27.5" r="2.7"/>
+  </g>
+  <circle class="b" cx="25" cy="10.25" r="2.7"/>
+  <circle class="o" cx="25" cy="21.75" r="2.7"/>
+  <circle class="g" cx="19" cy="27.5" r="2.7"/>
+</svg>

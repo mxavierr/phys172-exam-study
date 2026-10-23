@@ -263,6 +263,16 @@ with sync_playwright() as p:
     check('resume: sprint in play resumes after a reload', visible(q) == ['play'] and after['qi'] == before['qi'] == 2, (visible(q), before['qi'], after['qi']))
     q.keyboard.press('Escape'); q.wait_for_timeout(200)
     check('resume: finished sprint saved, snapshot cleared', hook(q, 'A._state()')['runs'] == 1 and q.evaluate("()=>localStorage.getItem('energy-sprint:sprint')") is None)
+    # header: logo is the home button; hover explanations
+    check('header: CRAMM title, logo, no footer', q.inner_text('.apptitle') == 'CRAMM' and q.is_visible('#home svg.logo') and q.query_selector('footer') is None)
+    q.click('#back'); q.click('#go'); q.wait_for_timeout(100); q.keyboard.press('Enter'); q.wait_for_timeout(50); q.click('#home'); q.wait_for_timeout(200)
+    check('home: logo leaves a sprint for the start screen and saves the run', visible(q) == ['start'] and hook(q, 'A._state()')['runs'] == 2, (visible(q), hook(q, 'A._state()')['runs']))
+    q.click('#toExam'); q.click('#xbegin'); q.wait_for_timeout(150); q.keyboard.press('B'); q.click('#home'); q.wait_for_timeout(200)
+    check('home: exam in progress is kept and offered for resume', visible(q) == ['start'] and q.is_visible('#xres'))
+    q.hover('#toDrill'); q.wait_for_timeout(600)
+    check('tips: hover shows the explanation', q.is_visible('#tipbox') and 'cleared' in q.inner_text('#tipbox'), q.inner_text('#tipbox') if q.is_visible('#tipbox') else '')
+    q.mouse.move(1, 1); q.wait_for_timeout(100)
+    check('tips: hidden when the mouse leaves', not q.is_visible('#tipbox'))
     check('resume: no page errors', not errs5, errs5[:2])
     c.close()
 
