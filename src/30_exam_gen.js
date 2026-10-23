@@ -12,7 +12,7 @@
    Adding a variant: give it a distinct chk.k (or chk field), then add it to xSub, SUBL and
    (if it changes a trait) the tag sets in 70_skills.js. tests/t_content.py fails until you do.
    ======================================================================== */
-const XG=10, XPTS=16, XMIN=70;
+const XG=10, XPTS=16, XMIN=60;
 /* One row per exam slot, in exam order. pace = seconds a well-prepared student should need
    (conceptual slots faster, multi-step slots slower; total ≈ 50 of the real exam's 60 minutes). */
 const XSLOTS=[

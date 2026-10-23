@@ -1,6 +1,6 @@
 {
-  "name": "CRAMM · PHYS 172 practice",
-  "short_name": "CRAMM",
+  "name": "BoilerCram · PHYS 172 practice",
+  "short_name": "BoilerCram",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",

@@ -63,7 +63,7 @@ button.brand:hover{filter:none;background:var(--field)}
 .logo{height:46px;width:auto;flex:none}
 .logo .lg-grid{fill:var(--ink);opacity:.22} .logo .lg-ink{fill:var(--ink)}
 .logo .lg-given{fill:var(--logo-given)} .logo .lg-find{fill:var(--logo-find)} .logo .lg-ok{fill:var(--logo-correct)}
-.apptitle{font-size:42px;line-height:1;font-weight:700;letter-spacing:.05em}
+.apptitle{font-size:42px;line-height:1;font-weight:700;letter-spacing:-.01em}
 .course{align-self:flex-end;padding-bottom:6px}
 /* tooltips (13_tips.js) */
 .tip{position:fixed;z-index:50;max-width:min(320px,calc(100vw - 16px));padding:8px 12px;border-radius:10px;background:var(--ink);color:var(--onink);
@@ -116,9 +116,25 @@ button.mode .ico{width:28px;height:28px}
 .empty{font-family:var(--mono);color:var(--graphite)}
 .sync{display:inline-flex;align-items:center;gap:6px;font-family:var(--mono);font-size:12px;color:var(--ok);margin-left:auto}
 .sync.off{color:var(--graphite)}
-.notice{display:flex;align-items:center;flex-wrap:wrap;gap:8px 12px;margin:14px 0 0;padding:10px 14px;border:1.5px solid var(--hair);border-radius:12px;
-        font-family:var(--mono);font-size:12px;color:var(--graphite)}
-.notice span{flex:1;min-width:200px}
+/* first-visit welcome (dialog) + the "start here" ring on the Mock exam tile */
+dialog.welcome{width:min(540px,calc(100vw - 32px));max-height:calc(100vh - 32px);box-sizing:border-box;padding:26px 26px 20px;
+  border:0;border-top:3px solid var(--ink);border-radius:16px;background:var(--paper);color:var(--ink);box-shadow:0 14px 44px rgba(0,0,0,.28)}
+dialog.welcome::backdrop{background:rgba(20,18,15,.5)}
+.welcome h2{margin:0 0 6px;padding:0;border:0;font-size:28px;letter-spacing:-.01em}
+.wmodes{list-style:none;margin:14px 0 16px;padding:0}
+.wmodes li{display:grid;grid-template-columns:26px minmax(0,1fr);column-gap:14px;padding:12px 4px;border-top:1px solid var(--hair)}
+.wmodes li .ico{grid-row:span 2;width:24px;height:24px;margin-top:1px}
+.wmodes b{font-size:17px;font-weight:600}
+.wmodes span{color:var(--graphite);font-size:15px;line-height:1.4}
+.wmodes li.rec{border:2px solid var(--mari);border-radius:12px;padding:12px;margin-bottom:6px}
+.wmodes li.rec+li{border-top:0}
+.wmodes em,button.mode.hint::after{font-style:normal;font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.08em;
+  text-transform:uppercase;padding:3px 9px;border-radius:999px;background:var(--mari);color:#1F1D1A;vertical-align:2px;margin-left:8px}
+.wfoot{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
+.wfoot small{display:inline-flex;align-items:center;gap:6px;font-family:var(--mono);font-size:12px;color:var(--graphite)}
+button.mode.hint{position:relative;border:2px solid var(--mari);animation:hintpulse 2.2s ease-in-out infinite}
+button.mode.hint::after{content:'Start here';position:absolute;top:12px;right:12px;margin:0}
+@keyframes hintpulse{0%,100%{box-shadow:0 0 0 3px rgba(233,169,58,.3)}50%{box-shadow:0 0 0 9px rgba(233,169,58,.1)}}
 /* exam intro: big facts + the question map */
 .facts .stat b{font-size:44px}
 .slotmap{display:flex;flex-wrap:wrap;align-items:flex-end;gap:6px;margin:26px 0 4px}
@@ -434,7 +450,7 @@ details.skill[open]>summary>b::before{transform:rotate(90deg)}
 .shake{animation:nudge .22s}
 @keyframes rise{from{opacity:.3;transform:translateY(6px)}to{opacity:1;transform:none}}
 .rise{animation:rise .16s ease-out}
-@media (prefers-reduced-motion:reduce){.shake,.rise{animation:none}.xopt{transition:none}}
+@media (prefers-reduced-motion:reduce){.shake,.rise,button.mode.hint{animation:none}.xopt{transition:none}}
 
 /* ---------- phone ---------- */
 @media (max-width:620px){
@@ -442,6 +458,8 @@ details.skill[open]>summary>b::before{transform:rotate(90deg)}
   .logo{height:38px}
   .apptitle{font-size:34px}
   .course{align-self:auto;padding-bottom:0}
+  dialog.welcome{padding:22px 18px 18px}
+  .wfoot button{width:100%}
   h1{font-size:32px}
   .bigtime{font-size:42px}
   .bignum{font-size:64px}

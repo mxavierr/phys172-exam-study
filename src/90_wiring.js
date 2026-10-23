@@ -45,12 +45,19 @@ $('importfile').onchange=e=>{
                       ()=>paintStoreNote('✕ Not a progress file'));
 };
 
-/* ---- first-visit note on how progress is kept ---- */
-$('cookienote').hidden=lsGet(LS('noted'))==='1'||cookieGet('es_noted')==='1';
-on('cookieok',()=>{ lsSet(LS('noted'),'1'); cookieSet('es_noted','1',APP.cookieDays); $('cookienote').hidden=true; });
+/* ---- first visit: the welcome explains the modes and recommends a mock exam, whose tile then
+   wears a "start here" ring until it is opened (never for someone who already has an exam saved) ---- */
+const welcomed=()=>lsGet(LS('welcome'))==='1'||cookieGet('es_welcome')==='1';
+const hintExam=()=>{ $('toExam').classList.toggle('hint',welcomed()&&lsGet(LS('examhint'))!=='done'&&!store.exams.length); };
+const welcome=$('welcome');
+welcome.addEventListener('close',()=>{ lsSet(LS('welcome'),'1'); cookieSet('es_welcome','1',APP.cookieDays); hintExam(); });
+welcome.addEventListener('click',e=>{ if(e.target===welcome) welcome.close(); });   /* click outside the box */
+on('welcomeok',()=>welcome.close());
+if(!welcomed()){ try{ welcome.showModal(); }catch(e){ welcome.setAttribute('open',''); } }
+ensureStore().then(hintExam);
 
 /* ---- mock exam ---- */
-const openExamIntro=()=>{ renderSlotMap(); show('xintro'); };
+const openExamIntro=()=>{ lsSet(LS('examhint'),'done'); $('toExam').classList.remove('hint'); renderSlotMap(); show('xintro'); };
 on('toExam',openExamIntro);
 on('xbegin',()=>{
   const start=()=>{ $('xresume').hidden=true; lsDel(LS('exam')); xStart(); };

@@ -1,4 +1,4 @@
-# Contributing to CRAMM
+# Contributing to BoilerCram
 
 Read `docs/DEV_NOTES.md` before any change; log every change in `docs/CHANGELOG.md`.
 

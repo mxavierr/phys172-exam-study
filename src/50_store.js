@@ -191,7 +191,7 @@ function exportStore(){
     const body=JSON.stringify({app:APP.ns,schema:APP.schema,exported:Date.now(),store,prefs:readPrefs()});
     const a=document.createElement('a');
     a.href=URL.createObjectURL(new Blob([body],{type:'application/json'}));
-    a.download=`cramm-progress-${new Date().toISOString().slice(0,10)}.json`;
+    a.download=`boilercram-progress-${new Date().toISOString().slice(0,10)}.json`;
     document.body.appendChild(a); a.click(); a.remove();
     setTimeout(()=>URL.revokeObjectURL(a.href),4000);
   });

@@ -114,7 +114,7 @@ Where it lives:
 |---|---|
 | `localStorage['energy-sprint:progress']` | the full store |
 | cookie `es_save` | `{s:store, p:{bonus, best}}`, deflate-compressed + base64url (`z…`; plain JSON `j…` where `CompressionStream` is missing), trimmed to ≤ 3 800 characters (`APP.cookieMax`): newest records first, mock exams kept longest. Path = the page's folder, `SameSite=Lax`, `Secure` on https, 400-day lifetime renewed on every visit |
-| `localStorage` other keys | `energy-sprint:exam` (exam in progress; the clock keeps running while closed), `:sprint` (sprint in play, resumed within 1 h), `:bonus`, `:points:<dur>:<scope>:<b\|f>` (personal bests), `:noted` (first-visit note dismissed; also cookie `es_noted`) |
+| `localStorage` other keys | `energy-sprint:exam` (exam in progress; the clock keeps running while closed), `:sprint` (sprint in play, resumed within 1 h), `:bonus`, `:points:<dur>:<scope>:<b\|f>` (personal bests), `:welcome` (first-visit welcome closed; also cookie `es_welcome`), `:examhint` (the "Start here" ring on Mock exam has been followed) |
 | backup file | Progress → Export writes `{app:'energy-sprint', schema, exported, store, prefs}`; Import merges one back. This replaces account sync for moving between devices |
 
 On load the localStorage copy and the cookie copy are merged record by record, then both are

@@ -21,7 +21,7 @@
 
 ## 2. Smoke test it yourself on the live URL (15 minutes)
 - [ ] Phone and laptop. Use at least one Safari (iPhone/Mac) and one Chrome.
-- [ ] The first-visit note appears. After you tap OK it stays gone after a reload.
+- [ ] The welcome pop-up appears on the first visit and not again after "Got it". The Mock exam tile is ringed "Start here" until you open it.
 - [ ] Sprint: answer a few, reload mid-sprint, and check that it resumes. Then finish it.
 - [ ] Mock exam: answer 2 questions, close the tab, reopen, and resume.
 - [ ] Drill: finish one.

@@ -1,6 +1,6 @@
 {
   "name": "energy-sprint",
-  "version": "3.3.0",
+  "version": "3.4.0",
   "private": true,
   "description": "PHYS 172 Module 2 practice: timed sprint, mock exam, adaptive drill. One self-contained static page built from src/.",
   "scripts": {

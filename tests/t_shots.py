@@ -19,6 +19,7 @@ with sync_playwright() as p:
     c = b.new_context(viewport={'width': W, 'height': 900}, color_scheme=scheme)
     c.add_init_script(f"if(!localStorage.getItem('energy-sprint:progress'))localStorage.setItem('energy-sprint:progress',{json.dumps(json.dumps(SAMPLE))});")
     pg = c.new_page(); errs = []; pg.on('pageerror', lambda e: errs.append(str(e))); pg.route('**/*', allow)
+    pg.add_init_script("localStorage.setItem('energy-sprint:welcome','1')")
     pg.goto(URL); pg.wait_for_timeout(1500)
     tag = f'{W}_{scheme}'
     pg.screenshot(path=str(out / f'01_start_{tag}.png'), full_page=True)

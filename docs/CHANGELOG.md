@@ -2,6 +2,17 @@
 
 Newest first. Every published change gets an entry: what changed, why, and how it was checked.
 
+## v3.4 · 2026-10-23 · BoilerCram, 60-minute mock exam, welcome
+* Renamed **BoilerCram** (title, header, install name, export file name). Stored names unchanged.
+* **Mock exam is 60 minutes** (`XMIN`), matching the real exam. Per-question pace targets (≈ 50 min in
+  total) are unchanged. An exam already in progress keeps the deadline it started with.
+* **First-visit welcome** (`<dialog id="welcome">`): one line per mode, Mock exam first with a
+  "Start here" badge, and where progress is kept. It replaces the separate storage note. Remembered in
+  localStorage `energy-sprint:welcome` and cookie `es_welcome`.
+* After the welcome, the **Mock exam tile wears a marigold "Start here" ring** until it is opened
+  (`energy-sprint:examhint`); never shown to someone who already has a mock exam saved.
+* Checked: full suite passes, with new checks for the welcome, its memory, and the ring.
+
 ## v3.3 · 2026-10-23 · CRAMM: new name, logo, tooltips, math in sentences
 * Renamed **CRAMM** (page title, header, install name). Stored names (`energy-sprint` keys, `es_save`
   cookie) are unchanged, so everyone's saved progress carries over.

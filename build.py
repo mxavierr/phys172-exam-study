@@ -1,4 +1,4 @@
-"""Build CRAMM (internally "energy-sprint"): join src/* in file-name order into one self-contained web page.
+"""Build BoilerCram (internally "energy-sprint"): join src/* in file-name order into one self-contained web page.
 
   python3 -I build.py [outdir]          (default: dist/)
 

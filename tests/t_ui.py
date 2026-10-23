@@ -36,8 +36,9 @@ SAMPLE = {"v": 1, "updated": 1790500000000,
 COOKIE = 'es_save'
 
 
-def new_page(ctx, errs):
+def new_page(ctx, errs, welcome=True):
     pg = ctx.new_page()
+    if welcome: pg.add_init_script("localStorage.setItem('energy-sprint:welcome','1')")   # a returning visitor: no welcome dialog
     pg.on('pageerror', lambda e: errs.append(str(e)))
     pg.on('console', lambda m: errs.append('CSP: ' + m.text) if 'Content Security Policy' in m.text else None)
     pg.route('**/*', lambda r: r.abort() if not r.request.url.startswith(ORIGIN) else r.continue_())
@@ -169,7 +170,7 @@ with sync_playwright() as p:
     pg.click('#xdrill'); pg.wait_for_timeout(200)
     check('exam: "Drill these" opens the picker with suggestions', visible(pg) == ['dintro'] and pg.eval_on_selector_all('#dchips .chip.on', 'n=>n.length') >= 1)
     pg.click('#dback'); pg.click('#toExam'); pg.click('#xbegin'); pg.wait_for_timeout(100)
-    hook(pg, 'A._xage(70*60+5)'); pg.wait_for_timeout(500)
+    hook(pg, 'A._xage(60*60+5)'); pg.wait_for_timeout(500)
     check('exam: time-up submits by itself', visible(pg) == ['xdone'] and hook(pg, 'A._store().exams.filter(e=>e.timeUp===1).length') == 1)   # aging the clock moves t0 back, so this exam sorts first
     check('exam: no page errors', not errs2, errs2[:2])
     ctx.close()
@@ -251,10 +252,15 @@ with sync_playwright() as p:
     # sprint in play survives a reload; first-visit note
     errs5 = []
     c = b.new_context(viewport={'width': 390, 'height': 844})
-    q = new_page(c, errs5); q.goto(PAGE); q.wait_for_timeout(300)
-    check('note: first-visit storage note shown', q.is_visible('#cookienote'))
-    q.click('#cookieok'); q.reload(); q.wait_for_timeout(300)
-    check('note: stays dismissed after a reload', not q.is_visible('#cookienote'))
+    q = new_page(c, errs5, welcome=False); q.goto(PAGE); q.wait_for_timeout(300)
+    check('welcome: first visit opens the explainer, Mock exam marked "Start here"',
+          q.is_visible('#welcome') and 'start here' in q.inner_text('#welcome .rec').lower() and len(q.query_selector_all('#welcome .wmodes li')) == 4)
+    check('welcome: no Mock exam ring while the explainer is open', 'hint' not in (q.get_attribute('#toExam', 'class') or ''))
+    q.click('#welcomeok'); q.wait_for_timeout(150)
+    check('welcome: Got it closes it and rings the Mock exam tile', not q.is_visible('#welcome') and 'hint' in q.get_attribute('#toExam', 'class'))
+    q.reload(); q.wait_for_timeout(400)
+    check('welcome: not shown again; ring stays until Mock exam is opened', not q.is_visible('#welcome') and 'hint' in q.get_attribute('#toExam', 'class'))
+    check('welcome: remembered in a cookie too', any(k['name'] == 'es_welcome' for k in c.cookies()))
     q.click('#go'); q.wait_for_timeout(100)
     q.fill('#ans', str(hook(q, 'A._cur()')['ans'])); q.keyboard.press('Enter'); q.wait_for_timeout(50)
     before = hook(q, 'A._state()')
@@ -264,11 +270,12 @@ with sync_playwright() as p:
     q.keyboard.press('Escape'); q.wait_for_timeout(200)
     check('resume: finished sprint saved, snapshot cleared', hook(q, 'A._state()')['runs'] == 1 and q.evaluate("()=>localStorage.getItem('energy-sprint:sprint')") is None)
     # header: logo is the home button; hover explanations
-    check('header: CRAMM title, logo, no footer', q.inner_text('.apptitle') == 'CRAMM' and q.is_visible('#home svg.logo') and q.query_selector('footer') is None)
+    check('header: BoilerCram title, logo, no footer', q.inner_text('.apptitle') == 'BoilerCram' and q.is_visible('#home svg.logo') and q.query_selector('footer') is None)
     q.click('#back'); q.click('#go'); q.wait_for_timeout(100); q.keyboard.press('Enter'); q.wait_for_timeout(50); q.click('#home'); q.wait_for_timeout(200)
     check('home: logo leaves a sprint for the start screen and saves the run', visible(q) == ['start'] and hook(q, 'A._state()')['runs'] == 2, (visible(q), hook(q, 'A._state()')['runs']))
     q.click('#toExam'); q.click('#xbegin'); q.wait_for_timeout(150); q.keyboard.press('B'); q.click('#home'); q.wait_for_timeout(200)
     check('home: exam in progress is kept and offered for resume', visible(q) == ['start'] and q.is_visible('#xres'))
+    check('welcome: ring gone once Mock exam was opened', 'hint' not in (q.get_attribute('#toExam', 'class') or ''))
     q.hover('#toDrill'); q.wait_for_timeout(600)
     check('tips: hover shows the explanation', q.is_visible('#tipbox') and 'cleared' in q.inner_text('#tipbox'), q.inner_text('#tipbox') if q.is_visible('#tipbox') else '')
     q.mouse.move(1, 1); q.wait_for_timeout(100)

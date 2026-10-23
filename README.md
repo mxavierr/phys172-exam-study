@@ -1,11 +1,11 @@
-# CRAMM
+# BoilerCram
 
 Free practice for **PHYS 172 Module 2** (HW11–HW15, Exam 2) that runs in your browser.
 
 | mode | what it does |
 |---|---|
 | **Sprint** | Timed typed-answer recall (3 / 5 / 10 min). 59 problem generators with fresh numbers every time, difficulty scoring, an optional time bonus, and step-by-step solutions for every miss. |
-| **Mock exam** | 15 multiple-choice questions, 70 minutes, in the Exam 2 order. Every wrong option is a common trap, explained in the review. You can resume after a reload. |
+| **Mock exam** | 15 multiple-choice questions, 60 minutes, in the Exam 2 order. Every wrong option is a common trap, explained in the review. You can resume after a reload. |
 | **Drill** | Untimed and adaptive. It suggests the problem types you miss and ends when each one is cleared. |
 | **Progress** | Exam-weighted skill standing, weak spots, patterns, and the history of every sprint, exam, and drill. |
 
