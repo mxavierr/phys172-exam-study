@@ -1,0 +1,16 @@
+{
+  "name": "energy-sprint",
+  "version": "3.2.0",
+  "private": true,
+  "description": "PHYS 172 Module 2 practice: timed sprint, mock exam, adaptive drill. One self-contained static page built from src/.",
+  "scripts": {
+    "build": "python3 -I build.py",
+    "test": "bash tests/run_all.sh",
+    "vendor:katex": "mkdir -p vendor/katex/fonts && cp node_modules/katex/dist/katex.min.js node_modules/katex/dist/katex.min.css vendor/katex/ && cp node_modules/katex/dist/fonts/*.woff2 vendor/katex/fonts/",
+    "serve": "python3 -m http.server -d dist 8000"
+  },
+  "devDependencies": {
+    "eslint": "8.57.0",
+    "katex": "0.16.11"
+  }
+}

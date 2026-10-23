@@ -1,0 +1,17 @@
+{
+  "root": true,
+  "env": {"browser": true, "es2022": true},
+  "parserOptions": {"ecmaVersion": 2022, "sourceType": "script"},
+  "rules": {
+    "no-undef": "error",
+    "no-unused-vars": ["warn", {"vars": "all", "args": "none", "varsIgnorePattern": "^_"}],
+    "no-redeclare": "error",
+    "no-dupe-keys": "error",
+    "no-unreachable": "error",
+    "no-const-assign": "error",
+    "no-use-before-define": ["error", {"functions": false, "classes": true, "variables": false}],
+    "no-self-assign": "error",
+    "no-dupe-else-if": "error",
+    "no-duplicate-case": "error"
+  }
+}
