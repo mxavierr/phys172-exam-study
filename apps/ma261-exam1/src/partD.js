@@ -305,7 +305,7 @@ function dResults(D,idx,rec){
   const ol=$('dgreview'); try{ if(window.MathJax&&MathJax.typesetClear) MathJax.typesetClear([ol]); }catch(e){}
   ol.innerHTML='';
   idx.forEach(i=>{ const x=X(i), r=R(i), c=DCON[x.ci], li=document.createElement('li'); li.className='xq'+(r.res===1?' okq':''); li.value=i+1;
-    let h=`<span class="meta">Question ${i+1} · ${esc(c.name)} (§${c.sec}) · ${x.src==='exam'?'exam-level':x.src==='idea'?'concept':'computation'} · ${r.res===-1?'don’t know':r.res===1?'right':'wrong'}${r.conf?' · '+CONF[r.conf].toLowerCase():''} · ${fmtClock(r.t)} of ≈${fmtClock(x.exp)}${x.pin?` · picked by ${x.pinSrc==='ai'?'Claude':'the pattern finder'}: ${esc(x.pin)}`:''}</span><div>${x.q}</div>`;
+    let h=`<span class="meta">Question ${i+1} · ${esc(c.name)} (§${c.sec}) · ${x.src==='exam'?'exam-level':x.src==='idea'?'concept':'computation'} · ${r.res===-1?'don’t know':r.res===1?'right':'wrong'}${r.conf?' · '+CONF[r.conf].toLowerCase():''} · ${fmtClock(r.t)} of ≈${fmtClock(x.exp)}${x.pin?` · picked by the pattern finder: ${esc(x.pin)}`:''}</span><div>${x.q}</div>`;
     x.opts.forEach((o,k)=>{ const isKey=k===x.key, bad=k===r.pick&&!isKey; h+=`<span class="opt${isKey?' key':''}${bad?' bad':''}"><i>${isKey?'✓':bad?'✗':' '}${LET[k]}</i>${o.h}</span>`; });
     if(r.res===0&&x.opts[r.pick].why) h+=`<span class="whyno">Why ${LET[r.pick]} is tempting: ${x.opts[r.pick].why}</span>`;
     h+=solHTML(x); if(r.res===1) h=h.replace('<details class="sol" open>','<details class="sol">');

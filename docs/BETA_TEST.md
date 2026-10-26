@@ -17,7 +17,7 @@
    ```
 3. On GitHub, go to **Settings → Pages → Build and deployment → Source: GitHub Actions**.
 4. Open the **Actions** tab. The "Deploy to GitHub Pages" run builds the site, runs every test (about 5 minutes), and deploys only if they all pass.
-5. Open `https://<your-username>.github.io/<repo-name>/`.
+5. Open `https://<your-username>.github.io/<repo-name>/`: the class picker. PHYS 172 → Exam 1 / Exam 2, MA 261 → Exam 1.
 
 ## 2. Smoke test it yourself on the live URL (15 minutes)
 - [ ] Phone and laptop. Use at least one Safari (iPhone/Mac) and one Chrome.

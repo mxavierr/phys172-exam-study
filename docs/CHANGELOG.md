@@ -2,6 +2,25 @@
 
 Newest first. Every published change gets an entry: what changed, why, and how it was checked.
 
+## v4.0 · 2026-10-25 · more classes: class picker, PHYS 172 Exam 1, MA 261 Exam 1
+* **Site map** (`site/site.json`): the home page is a class picker; each class has an exam picker; each exam
+  has its own page with the start screen of before. The header logo goes to all classes and a breadcrumb
+  (course / exam) leads back. Exam 2 moved to `/phys172/exam2/`; its stored names are unchanged, so progress carries over.
+* **Engine and packs.** Everything exam-specific moved out of `src/` into `packs/<exam>/` (generators, figures,
+  mock exam, taxonomy, constants, topic groups) plus `pack.json` for labels; `build.py` joins engine + pack per page.
+* **PHYS 172 Exam 1** (HW01–HW10) as a pack: 96 sprint generators, figures, the 15-question mock exam at 60 minutes
+  (the earlier version ran longer), per-slot pace, every variant tagged so the drill and skills work.
+* **MA 261 Exam 1** (`apps/ma261-exam1/`, its own engine): sprint (typed or choice), mock exam, diagnostic, quadric
+  trainer, progress, restyled with the shared header, tiles, welcome and tooltips. Mock exam and diagnostic at 1x
+  (60 minutes, 5:00 a question). A **"Harder this term"** note on the exam intro. **The Fall 2026
+  Midterm 1 (Version A)** to redo: 12 questions as printed, choices A–F, worked solutions; results join progress.
+  Removed from the personal version: account sync, the AI analyst and AI answer key, phone photos and zip export.
+  Progress: localStorage + a compressed cookie copy (`m261_save`).
+* Inline math: braced subscripts with spaces (`F_{A on B}`), formulas before an unclosed parenthesis.
+* CI tests every branch and pull request; only `main` deploys.
+* Checked: Exam 2 full suite; Exam 1 content (96 generators × 300 + 150 exams), 14 376 KaTeX lines, smoke test;
+  MA 261 end-to-end (34 checks incl. the real exam's key, A–F keys, MathJax on every solution, cookie restore, 390 px).
+
 ## v3.4 · 2026-10-23 · BoilerCram, 60-minute mock exam, welcome
 * Renamed **BoilerCram** (title, header, install name, export file name). Stored names unchanged.
 * **Mock exam is 60 minutes** (`XMIN`), matching the real exam. Per-question pace targets (≈ 50 min in

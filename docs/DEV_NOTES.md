@@ -4,8 +4,23 @@ Read this before changing anything. It is the map of the code, the rules that ke
 safe, and the checklist for common changes. Every change goes in `docs/CHANGELOG.md`.
 Contributor rules in short: `CONTRIBUTING.md`.
 
-The app is a static site: one HTML page plus KaTeX files, no server, no accounts. Progress is
-kept in each student's own browser (cookie + localStorage, §4).
+The app is a static site, no server, no accounts. Progress is kept in each student's own browser
+(cookie + localStorage, §4).
+
+## 0. Site map
+
+`site/site.json` lists the classes and their exams; `build.py` turns it into `dist/`:
+
+| page | built from |
+|---|---|
+| `/` class picker, `/<class>/` exam picker | `site/hub.html` (tiles show the best mock-exam score saved in this browser) |
+| `/phys172/exam1/`, `/phys172/exam2/` | the shared engine `src/` + that exam's pack `packs/<pack>/` (a pack file replaces the engine file of the same name; `pack.json` fills the `{{PLACEHOLDERS}}`) |
+| `/ma261/exam1/` | `apps/ma261-exam1/` (its own engine, built by its `build_app.py`; `theme.css` maps it onto the shared look, copying the header/tile/welcome/tooltip rules from `src/01_style.css`) |
+
+A pack provides: `10p_pack.js` (K, CONST_TEX, EXAM_OUT, GROUPS), `11_figs.js`, `2x_gen_*.js`, `30_exam_gen.js`
+(XSLOTS with pace, XPTS, XMIN, XTOT, XPACE, buildExam, genOne), `69_taxonomy.js` (SUBL, xSub, CSUBS, TAGS,
+tagsOf, catName, grpOf) and `pack.json` (ns, cookie, exam name, sizes, constants band, notes).
+**Adding an exam on the engine:** copy a pack, replace its content, add it to `site/site.json`, run the tests on its page.
 
 ## 1. Build and test
 
