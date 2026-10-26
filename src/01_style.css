@@ -318,6 +318,10 @@ ol.cer li{margin-bottom:6px}
 .fig .fh{fill:var(--find)}
 .fig .v{stroke:var(--ink);stroke-width:2.2;stroke-linecap:round}
 .fig .vh{fill:var(--ink)}
+.fig .rh{fill:var(--ink)}
+.fig .w{fill:var(--field);stroke:var(--ink);stroke-width:1.5}
+.fig .qp,.fig .qn{fill:var(--field);stroke:var(--ink);stroke-width:2}     /* charges: the sign is written inside */
+.fig .oval,.fig .car{fill:none;stroke:var(--graphite);stroke-width:1.4;stroke-dasharray:6 4}
 .fig .fv{stroke:var(--find);stroke-width:2.6;stroke-linecap:round}
 .fig .fvh{fill:var(--find)}
 .fig .ask{fill:none;stroke:var(--find);stroke-width:2.4}

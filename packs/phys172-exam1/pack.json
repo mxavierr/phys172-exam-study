@@ -1,0 +1,24 @@
+{
+  "ns": "phys172-exam1",
+  "cookie": "pe1_save",
+  "welcome": "phys",
+  "exam": "Exam 1",
+  "xq": 15,
+  "xmin": 60,
+  "xpts": 240,
+  "xg": "10",
+  "hwtag": "HW01",
+  "focusLabel": "Exam 1 topics",
+  "focusTip": "Only the topics on the Exam 1 list (leaves out the atomic model, relativistic momentum and curving motion)",
+  "xnote": "g = 10 m/s² · sin 37° = 0.6, cos 37° = 0.8 · select the closest answer",
+  "consts": [
+    "<div><span>g</span> 9.8 N/kg</div>",
+    "<div><span>G</span> 6.674×10<sup>−11</sup></div>",
+    "<div><span>1/4πε₀</span> 8.99×10<sup>9</sup></div>",
+    "<div><span>e</span> 1.602×10<sup>−19</sup> C</div>",
+    "<div><span>c</span> 3×10<sup>8</sup> m/s</div>",
+    "<div><span>N<sub>A</sub></span> 6.02×10<sup>23</sup></div>",
+    "<div><span>ρ<sub>water</sub></span> 1000 kg/m³</div>",
+    "<div><span>ρ<sub>air</sub></span> 1.2 kg/m³</div>"
+  ]
+}

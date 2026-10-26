@@ -133,9 +133,10 @@ function plainToTex(s){
      .replace(/[₀-₉]+/g,m=>'_{'+[...m].map(c=>SUB[c]).join('')+'}');
   t=t.replace(/[½−±·×≈≤≥⇔→α-ωΓΔΘΛΞΠΣΦΨΩ%&#$]/g,c=>TEX_SYM[c]||c);
   t=t.replace(/\b(sin|cos|tan|ln)\b/g,'\\$1 ');
+  t=t.replace(/_\{([A-Za-z \u2063]+)\}/g,(m,w)=>'_{\\text{'+w.replace(/\u2063/g,' ')+'}}');      /* F_{A on B} */
   return t.replace(/_([A-Za-z]{2,})/g,'_{\\text{$1}}').replace(/_([A-Za-z0-9])(?![A-Za-z0-9{])/g,'_{$1}');
 }
-const subHTML=s=>esc(s).replace(/_([A-Za-z0-9α-ω]+)/g,'<sub>$1</sub>');
+const subHTML=s=>esc(s).replace(/_\{([^}]*)\}/g,(m,w)=>'<sub>'+w.replace(/\u2063/g,' ')+'</sub>').replace(/_([A-Za-z0-9α-ω]+)/g,'<sub>$1</sub>');
 const TEX_INLINE={displayMode:false,throwOnError:true,strict:'ignore',output:'html'};
 function texInline(src){
   const tex=plainToTex(src);
@@ -145,7 +146,7 @@ function texInline(src){
   return `<span class="tx raw" data-tex="${esc(tex).replace(/"/g,'&quot;')}">${subHTML(src)}</span>`;
 }
 function mathText(s){
-  const words=String(s==null?'':s).split(/(\s+)/), out=[];
+  const words=String(s==null?'':s).replace(/_\{[^}]*\}/g,m=>m.replace(/ /g,'\u2063')).split(/(\s+)/), out=[];   /* keep F_{A on B} one word */
   let run=[];
   const flush=()=>{
     if(!run.length) return;
@@ -155,6 +156,10 @@ function mathText(s){
     const bal=()=>(src.match(/\(/g)||[]).length-(src.match(/\)/g)||[]).length;
     while(bal()>0&&src[0]==='('){ pre+='('; src=src.slice(1); }
     while(bal()<0&&src.endsWith(')')){ post=')'+post; src=src.slice(0,-1); }
+    if(bal()>0){                              /* "x = y (f = ...": the formula ends before the unclosed "(" */
+      let d=0, cut=-1; for(let i=src.length-1;i>=0;i--){ const ch=src[i]; if(ch===')') d++; else if(ch==='('){ if(d) d--; else { cut=i; break; } } }
+      if(cut>0){ post=src.slice(cut)+post; src=src.slice(0,cut).replace(/\s+$/,''); post=' '+post; }
+    }
     const trail=run[run.length-1].match(/\s+$/);
     out.push(esc(pre)+(bal()===0&&/[A-Za-z0-9α-ωΓΔΘΛΞΠΣΦΨΩ]/.test(src)?texInline(src):subHTML(src))+esc(post)+(trail?trail[0]:''));
     run=[];
