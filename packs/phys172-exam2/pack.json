@@ -1,0 +1,24 @@
+{
+  "ns": "energy-sprint",
+  "cookie": "es_save",
+  "welcome": "phys",
+  "exam": "Exam 2",
+  "xq": 15,
+  "xmin": 60,
+  "xpts": 240,
+  "xg": "10",
+  "hwtag": "HW11",
+  "focusLabel": "Exam 2 topics",
+  "focusTip": "Only the topics on the Exam 2 list (leaves out particle energy, identity change and power)",
+  "xnote": "g = 10 m/s² · k = 9×10⁹ N·m²/C² · e = 1.6×10⁻¹⁹ C",
+  "consts": [
+    "<div><span>g</span> 9.8 N/kg</div>",
+    "<div><span>G</span> 6.67×10<sup>−11</sup></div>",
+    "<div><span>1/4πε₀</span> 9×10<sup>9</sup></div>",
+    "<div><span>e</span> 1.6×10<sup>−19</sup> C</div>",
+    "<div><span>c</span> 3×10<sup>8</sup> m/s</div>",
+    "<div><span>1 eV</span> 1.6×10<sup>−19</sup> J</div>",
+    "<div><span>m<sub>p</sub></span> 1.67×10<sup>−27</sup> kg</div>",
+    "<div><span>m<sub>e</sub></span> 9.11×10<sup>−31</sup> kg</div>"
+  ]
+}

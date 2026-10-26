@@ -11,18 +11,12 @@ const TOPIC_HW={},FIRST={};
 TOPICS.forEach(t=>{TOPIC_HW[t]=[...new Set(GEN.filter(g=>g.cat===t).map(g=>g.hw))].sort((a,b)=>a-b);});
 GEN.forEach((g,i)=>{ if(FIRST[g.cat]===undefined) FIRST[g.cat]=i; });
 TOPICS.sort((a,b)=>TOPIC_HW[a][0]-TOPIC_HW[b][0]||FIRST[a]-FIRST[b]);
-/* the Exam 2 "what you should know" list leaves out rest energy, identity change and power */
-const EXAM_OUT=['Particle energy','Identity change','Power'];
 const hwRange=list=>{
   if(list.length===1)return hwLabel(list[0]);
   const contiguous=list.every((h,i)=>i===0||h===list[i-1]+1);
   return contiguous?`${hwLabel(list[0])}–${String(list[list.length-1]).padStart(2,'0')}`
                    :list.map(hwLabel).join(', ');
 };
-const GROUPS=[
-  {key:'a',name:'HW11–HW13',desc:'work, the Energy Principle, potential energy, energy diagrams',test:t=>TOPIC_HW[t][0]<=13},
-  {key:'b',name:'HW14–HW15',desc:'thermal energy, dissipation, rotational energy',test:t=>TOPIC_HW[t][0]>=14}
-];
 
 /* ---- answer parsing & checking ---- */
 function parseNum(s){

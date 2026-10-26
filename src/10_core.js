@@ -9,12 +9,14 @@
 
 /* ---- app identity: names that must never drift between modules ---- */
 const APP={
-  ns:'energy-sprint',          /* localStorage prefix. Changing it orphans every saved key. */
+  ns:'{{NS}}',          /* localStorage prefix, one per exam (pack.json). Changing it orphans every saved key. */
   schema:2,                    /* store.v. v1 = runs+exams(slots); v2 adds drills and exam.q (additive). */
-  cookie:'es_save',            /* progress cookie (see 50_store.js). Changing it orphans every saved cookie. */
+  cookie:'{{COOKIE}}',            /* progress cookie (see 50_store.js). Changing it orphans every saved cookie. */
   cookieMax:3800,              /* characters; one cookie stays under the 4 KB every browser accepts */
   cookieDays:400               /* the longest lifetime current browsers allow */
 };
+/* where this page sits in the site: root = relative link to the class picker */
+const SITE={root:'{{ROOT}}', rootPath:new URL('{{ROOT}}',location.href).pathname, group:'{{WELCOME}}'};
 const LS=name=>APP.ns+':'+name;               /* LS('progress'), LS('exam'), LS('bonus'), LS('points:…') */
 const lsGet=k=>{ try{ return localStorage.getItem(k); }catch(e){ return null; } };
 const lsSet=(k,v)=>{ try{ localStorage.setItem(k,v); }catch(e){} };
@@ -29,16 +31,14 @@ function cookieGet(name){
     return hit?hit.slice(name.length+1):null;
   }catch(e){ return null; }
 }
-function cookieSet(name,value,days){
+function cookieSet(name,value,days,path){
   try{
-    document.cookie=`${name}=${value}; Max-Age=${Math.round(days*86400)}; Path=${cookiePath()}; SameSite=Lax`+
+    document.cookie=`${name}=${value}; Max-Age=${Math.round(days*86400)}; Path=${path||cookiePath()}; SameSite=Lax`+
       (location.protocol==='https:'?'; Secure':'');
     return cookieGet(name)===value;
   }catch(e){ return false; }
 }
 
-/* ---- physics constants: the sprint uses these values and the constants band shows them ---- */
-const K={g:9.8, G:6.67e-11, ke:9e9, e:1.6e-19, c:3e8, eV:1.6e-19, mp:1.67e-27, me:9.11e-31};
 const D2R=Math.PI/180;
 
 /* ---- small helpers ---- */

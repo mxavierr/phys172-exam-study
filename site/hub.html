@@ -1,0 +1,25 @@
+<div class="wrap">
+<header class="apphead">
+  <a class="brand" href="{{ROOT}}" aria-label="BoilerCram: all classes">
+    {{LOGO}}
+    <span class="apptitle">BoilerCram</span>
+  </a>
+  <nav class="crumbs" aria-label="You are here">{{CRUMBS}}</nav>
+</header>
+<section class="hub">
+  <h1 class="hubhead">{{HEADING}}</h1>
+  <div class="hubgrid">
+{{TILES}}
+  </div>
+</section>
+</div>
+<script>
+/* best mock-exam score on each exam tile, read from that exam's saved progress in this browser */
+document.querySelectorAll('.hubtile[data-ns]').forEach(function(a){
+  try{
+    var o=JSON.parse(localStorage.getItem(a.dataset.ns+':progress')||'null'), ex=(o&&Array.isArray(o.exams))?o.exams:[];
+    var best=ex.reduce(function(m,e){ var v=+e.score; return isFinite(v)&&v>m?v:m; },-1);
+    if(best>=0){ var b=a.querySelector('.hubbest'); b.textContent='Best '+best+' / '+a.dataset.total; b.hidden=false; }
+  }catch(e){}
+});
+</script>

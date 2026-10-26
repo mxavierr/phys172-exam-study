@@ -10,12 +10,12 @@ const onKeyActivate=(el,fn)=>{ el.onkeydown=e=>{ if(e.key==='Enter'||e.key===' '
 
 /* ---- the logo: home from anywhere. A sprint in play ends and is saved (as Esc does);
    an exam in progress is saved and offered for resume; drills save after every answer. ---- */
-on('home',()=>{
-  if(phase==='start') return;
+const leaveSafely=()=>{
   if(phase==='play') endGame();
   else if(phase==='exam'&&XE&&!XE.done){ xLog(); xSave(); }
-  goHome();
-});
+};
+on('home',leaveSafely);                         /* a link to the class picker: save first, then it navigates */
+on('examhome',()=>{ if(phase==='start') return; leaveSafely(); goHome(); });
 
 /* ---- start screen + sprint ---- */
 on('go',startGame);
@@ -47,10 +47,11 @@ $('importfile').onchange=e=>{
 
 /* ---- first visit: the welcome explains the modes and recommends a mock exam, whose tile then
    wears a "start here" ring until it is opened (never for someone who already has an exam saved) ---- */
-const welcomed=()=>lsGet(LS('welcome'))==='1'||cookieGet('es_welcome')==='1';
+const WKEY='boilercram:welcome:'+SITE.group, WCOOKIE='es_welcome'+(SITE.group==='phys'?'':'_'+SITE.group);   /* one welcome per kind of exam page */
+const welcomed=()=>lsGet(WKEY)==='1'||lsGet(LS('welcome'))==='1'||cookieGet(WCOOKIE)==='1';
 const hintExam=()=>{ $('toExam').classList.toggle('hint',welcomed()&&lsGet(LS('examhint'))!=='done'&&!store.exams.length); };
 const welcome=$('welcome');
-welcome.addEventListener('close',()=>{ lsSet(LS('welcome'),'1'); cookieSet('es_welcome','1',APP.cookieDays); hintExam(); });
+welcome.addEventListener('close',()=>{ lsSet(WKEY,'1'); cookieSet(WCOOKIE,'1',APP.cookieDays,SITE.rootPath); hintExam(); });
 welcome.addEventListener('click',e=>{ if(e.target===welcome) welcome.close(); });   /* click outside the box */
 on('welcomeok',()=>welcome.close());
 if(!welcomed()){ try{ welcome.showModal(); }catch(e){ welcome.setAttribute('open',''); } }

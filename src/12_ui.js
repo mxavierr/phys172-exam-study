@@ -47,7 +47,6 @@ function markGivens(html){       /* question HTML carries no digits inside tags,
     .replace(GIVEN_RE,(m,pre,num,sp,u)=>`${pre}<span class="gv">${num}${sp}${u}</span>`)
     .replace(EQ_GIVEN_RE,(m,eq,num)=>`${eq}<span class="gv">${num}</span>`);
 }
-const CONSTS=new Set(['9.8','10','4186','6.67\\times10^{-11}','9\\times10^{9}','9\\times10^9','1.6\\times10^{-19}','3\\times10^{8}','3\\times10^8','1.67\\times10^{-27}','9.11\\times10^{-31}']);
 function givenNumbers(html){
   const t=String(html||'').replace(/<sup>[^<]*<\/sup>/g,'').replace(/<[^>]+>/g,' ').replace(/−/g,'-');
   return new Set((t.match(/-?\d+(?:\.\d+)?/g)||[]).map(x=>String(+x)));
@@ -70,7 +69,7 @@ function markFinal(t){
 function markGivenTex(t,given){
   return t.replace(/\((-?\d+(?:\.\d+)?(?:\\times10\^\{?-?\d+\}?)?)\)/g,(m,x)=>{
     const plain=/times/.test(x)?x:String(+x);
-    return given.has(plain)||CONSTS.has(x)?`(\\given{${x}})`:m;
+    return given.has(plain)||CONST_TEX.includes(x)?`(\\given{${x}})`:m;
   });
 }
 

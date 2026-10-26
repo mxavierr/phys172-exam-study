@@ -9,7 +9,7 @@ set -e
 cd "$(dirname "$0")/.."
 PY="${PYTHON:-python3}"
 "$PY" -I build.py
-P=dist/index.html
+P=dist/phys172/exam2/index.html
 "$PY" -I tests/t_content.py "$P" 300
 "$PY" -I tests/t_latex.py   "$P" 80
 "$PY" -I tests/t_figs.py    "$P"

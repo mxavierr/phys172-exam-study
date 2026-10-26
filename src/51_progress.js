@@ -67,10 +67,10 @@ function renderProg(){
   $('pPace').textContent=att?fmtClock(time/att):'–';
 
   const tpq=att?time/att:0, acc=att?right/att:0;
-  const reach=tpq>0?Math.max(1,Math.min(15,Math.floor(3600/tpq))):0;
+  const nq=XSLOTS.length, reach=tpq>0?Math.max(1,Math.min(nq,Math.floor(XMIN*60/tpq))):0;
   const solved=Math.round(acc*reach);
-  $('projpanel').innerHTML=`<span class="eyebrow">At this pace, a 60-min exam</span>`+
-    `<div class="proj"><div><span class="num">${reach}<small>/15</small></span><span class="eyebrow">reached</span></div>`+
+  $('projpanel').innerHTML=`<span class="eyebrow">At this pace, a ${XMIN}-min exam</span>`+
+    `<div class="proj"><div><span class="num">${reach}<small>/${nq}</small></span><span class="eyebrow">reached</span></div>`+
     `<div><span class="num">${solved}</span><span class="eyebrow">right</span></div></div>`;
 
   const m=fold(), box=$('weak');

@@ -13,14 +13,7 @@
    setup plus its parts (selecting Track: normal force also asks Track: speed first).
    ======================================================================== */
 
-/* build one question set for type c, optionally forcing variant `want` or avoiding variants in `avoid` */
-function genOne(c){
-  if(XSINGLE[c]) return {parts:[{c,it:{fig:'',...xroll(XSINGLE[c])}}]};
-  if(c===7||c===8){ const t=xTrackSet(), p=t.items.map((it,i)=>({c:7+i,it:{fig:'',...it}}));
-    return {setup:t.setup,fig:t.fig,parts:c===7?p.slice(0,1):p}; }
-  const L=xLaunchSet();
-  return {setup:L.setup,fig:L.fig,parts:[{c,it:{fig:'',...(c===12?x13(L.d):L.parts[c-13])}}]};
-}
+/* genOne(c) — one question set for slot c — is the exam pack's (30_exam_gen.js): it knows the linked sets */
 function genCat(c,want,avoid){
   let g=null;
   for(let i=0;i<70;i++){

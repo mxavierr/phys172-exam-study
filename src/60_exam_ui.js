@@ -124,7 +124,7 @@ function xResults(res){
 
 /* ---- exam intro: the 15 slots in order; a linked set (shared setup) is one bracketed group ---- */
 function renderSlotMap(){
-  const grp=i=>XSLOTS[i]&&(i===7||i===8?'T':i>=12?'L':''), cell=i=>`<span class="slot" title="${esc(XSLOTS[i].name)}">${i+1}</span>`;
+  const grp=i=>{ const g=XSLOTS[i]&&grpOf(i); return g&&!/^c\d+$/.test(g)?g:''; }, cell=i=>`<span class="slot" title="${esc(XSLOTS[i].name)}">${i+1}</span>`;
   let h='';
   for(let i=0;i<XSLOTS.length;){
     const g=grp(i);
