@@ -9,7 +9,7 @@ set -e
 cd "$(dirname "$0")/.."
 PY="${PYTHON:-python3}"
 "$PY" -I build.py
-E2=dist/phys172/exam2/index.html; E1=dist/phys172/exam1/index.html; M1=dist/ma261/exam1/index.html
+E2=dist/phys172/exam2/index.html; E1=dist/phys172/exam1/index.html; M1=dist/ma261/exam1/index.html; M2=dist/ma261/exam2/index.html
 echo "=== PHYS 172 Exam 2"
 "$PY" -I tests/t_content.py "$E2" 300
 "$PY" -I tests/t_latex.py   "$E2" 80
@@ -22,6 +22,9 @@ echo "=== PHYS 172 Exam 1"
 "$PY" -I tests/t_smoke.py   "$E1"
 echo "=== MA 261 Exam 1"
 "$PY" -I tests/t_ma261.py   "$M1"
+echo "=== MA 261 Exam 2"
+node apps/ma261-exam2/tests/dump.js 150 12 && "$PY" -I apps/ma261-exam2/tests/check.py --jobs 8     # sympy re-solve of every sample (about 25 min)
+"$PY" -I tests/t_ma261e2.py "$M2"
 echo "=== lint (engine + each pack, joined as the build joins them)"
 LINT=()
 if [ -x node_modules/.bin/eslint ]; then LINT=(node_modules/.bin/eslint); elif [ -n "$ESLINT_DIR" ]; then LINT=(npx --prefix "$ESLINT_DIR" eslint); fi

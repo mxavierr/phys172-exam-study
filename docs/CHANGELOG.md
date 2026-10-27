@@ -2,6 +2,26 @@
 
 Newest first. Every published change gets an entry: what changed, why, and how it was checked.
 
+## v4.1 · 2026-10-26 · MA 261 Exam 2
+* **New page `/ma261/exam2/`** (15.8, 16.1–16.6, 17.1–17.6 part 1, per the F26 calendar: Lessons 17–31), on the MA 261 engine.
+* **Content: 91 problem builders** written from the textbook exercise sets (16.1–17.6 index) and the 2015–2025 Exam 2 archive
+  (17 exams read; every template names the archive questions it models). One builder serves both the sprint (typed or choice)
+  and the mock exam, so a fix lands everywhere. Exam level adds this term's twists: "which set-up is NOT equal", regions that
+  split into two integrals, off-centre circles and spheres, non-conservative look-alikes with an "impossible" key, regions with
+  holes, open curves closed for Green, vortex field, density that moves the center of mass.
+* **Mock exam: six choices (A–F)** like the Fall 2026 exams (G flags), 60 minutes, blueprint from the archive: Lagrange 1,
+  Ch 16 six to eight (triple integrals ≈ 4 of 12), Ch 17 three to five.
+* **Drill** (exam templates by topic, feedback after each answer, ends when each topic is cleared) and a **study sheet**.
+* Diagnostic concept map rebuilt for Exam 2 (34 concepts); true/false banks for Ch 16–17. Quadric trainer and the real
+  Exam 1 removed from this page. Storage namespace `ma261-e2`, cookie `m261e2_save` (Exam 1 progress untouched).
+* Display: `tidy()` prints c·(expr) answers as one fraction, only when the value is unchanged.
+* Checked: `apps/ma261-exam2/tests/dump.js` (176 ids × 300 runs: 0 structural errors) + `check.py`, an independent sympy
+  re-solve from each problem's raw set-up (2,112 samples: 1,992 pass, 0 fail, 120 concept items skipped; 0 answer-string
+  conversion mismatches; 1,951 / 1,951 planted wrong keys caught). Set-up questions are checked with a test factor that depends
+  on θ, r and z, so two different set-ups cannot pass by integrating to the same number. `tests/t_ma261e2.py` passes (534–712
+  rendered questions typeset by MathJax with no error, mock exam, drill, sheet, cookie restore, 390 px). Exam 1 test still passes.
+* Build: `build_app.py` now refuses duplicate ids (a clash between the drill screen and a progress button was caught this way).
+
 ## v4.0 · 2026-10-25 · more classes: class picker, PHYS 172 Exam 1, MA 261 Exam 1
 * **Site map** (`site/site.json`): the home page is a class picker; each class has an exam picker; each exam
   has its own page with the start screen of before. The header logo goes to all classes and a breadcrumb

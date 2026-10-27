@@ -1,0 +1,133 @@
+<style>
+  /* ---------- drill (drill.js): picker, question card, summary ---------- */
+  #dintro .legend{margin:2px 0 14px}
+  #dintro .legend i.sug{width:12px;height:12px;border-radius:50%;box-shadow:0 0 0 3px var(--mari);background:transparent;margin-right:9px;vertical-align:-1px}
+  .drgroup{margin:0 0 6px}
+  .drgroup .setlabel{margin:16px 0 8px}
+  #drchips .chip .cn{font-family:var(--mono);font-size:12px;margin-right:8px;color:var(--graphite)}
+  #drchips .chip.sug{box-shadow:0 0 0 3px var(--mari)}
+  #drchips .chip small.st{opacity:1}
+  #drchips .chip small.weak{color:var(--bad)} #drchips .chip small.weak::before{content:'✕ '}
+  #drchips .chip small.shaky{color:var(--graphite)}
+  #drchips .chip small.solid{color:var(--ok)} #drchips .chip small.solid::before{content:'✓ '}
+  #drchips .chip small.new{color:var(--graphite);opacity:.7}
+  #drresume{border-left:0}
+  #drresume span{font-family:var(--mono);font-size:13px}
+
+  .drhead{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:10px 16px;margin:0 0 16px}
+  .drhead .dreye{display:block;font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--graphite)}
+  .drhead .drtag{font-size:20px;font-weight:600;line-height:1.25}
+  .drmeta{display:flex;align-items:center;gap:14px;font-family:var(--mono);font-size:14px;font-variant-numeric:tabular-nums}
+  .drpill{display:inline-flex;align-items:center;gap:8px;padding:5px 12px;border:1.5px solid var(--ink);border-radius:999px}
+  .drpill b{font-weight:500}
+  .drpill.over{background:var(--ink);color:var(--paper)}          /* past exam pace: inverted, never red */
+  #drstem{max-width:100%;overflow-x:auto;overflow-y:hidden}
+  #drstem mjx-container{font-size:105%}
+  #drstem.wait,#dropts.wait{visibility:hidden}
+  #dropts .xopt:disabled{opacity:1;cursor:default}
+  #dropts .xopt:disabled:hover{border-color:var(--rule)}
+  #dropts .xopt.drk,#dropts .xopt.drx{box-shadow:none}
+  #dropts .xopt.drk{border-color:var(--ok);background:var(--tgreen)}
+  #dropts .xopt.drk b{color:var(--ok)}
+  #dropts .xopt.drx{border-color:var(--bad);background:var(--trose)}
+  #dropts .xopt.drx b{color:var(--bad)}
+  #dropts .xopt.drk::after,#dropts .xopt.drx::after{flex:none;align-self:center;font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase}
+  #dropts .xopt.drk::after{content:'✓ Answer';color:var(--ok)}
+  #dropts .xopt.drx::after{content:'✕ Your pick';color:var(--bad)}
+  .drfb{margin-top:16px;padding:14px 18px;border-radius:12px;background:var(--tgreen)}
+  .drfb.no{background:var(--trose)}
+  .drfb .verdict{margin:0;min-height:0;font-size:17px;font-weight:600;display:block}
+  .drfb .whyno{display:block;margin:8px 0 0;font-size:15px;border-left:2px solid var(--bad);padding:1px 0 1px 10px}
+  .drfb .sol{margin-top:10px}
+  #drill .xctl{margin-top:18px}
+  .drail{margin:22px 0 0;border-top:1.5px solid var(--ink)}
+  .drow{display:flex;align-items:center;flex-wrap:wrap;gap:4px 12px;padding:7px 0;border-bottom:1px solid var(--rule);font-size:14.5px}
+  .drow b{font-weight:600}
+  .drow em{font-style:normal;color:var(--graphite);margin-left:auto;font-family:var(--mono);font-size:12px}
+  .drow.cleared b,.drow.cleared em{color:var(--ok)}
+  .drow.cleared b::before{content:'✓ '}
+  .drpips{display:inline-flex;gap:4px;align-items:center}
+  .drpips i{display:block;width:12px;height:12px;border-radius:3px;border:1.5px solid var(--hair2)}
+  .drpips i.ok{background:var(--ok);border-color:var(--ok)}
+  .drpips i.slow{border-color:var(--ok)}
+  .drpips i.no{border:0;width:auto;height:auto;font-style:normal;font-size:12px;line-height:1;color:var(--bad)}
+  .drpips i.no::before{content:'✕'}
+
+  #ddone .best{font-family:var(--mono)}
+  #drtable td.okc{color:var(--ok);white-space:nowrap}
+  #drtable td.opc{color:var(--graphite);white-space:nowrap}
+  #drprog td .how,#drtable td .how{display:block;font-size:13px;color:var(--ink-soft);margin-top:1px}
+  @media (max-width:620px){
+    .drhead .drtag{font-size:18px}
+    #dropts .xopt.drk,#dropts .xopt.drx{position:relative;padding-top:24px}
+    #dropts .xopt.drk::after,#dropts .xopt.drx::after{position:absolute;top:6px;right:12px;font-size:10px}
+    #drill .xctl .push{margin-left:auto;flex-basis:auto}
+  }
+</style>
+
+<!-- ===================== DRILL: PICK TOPICS ===================== -->
+<section id="dintro" hidden>
+  <h1>Drill</h1>
+  <div class="legend"><span><i class="sug"></i>suggested</span><span data-tip="A topic is cleared after its last 3 answers are right, at least 2 of them within 5:00, and every question you missed has come back and been answered right. Topics that start weak need at least 4 answers.">ends when each topic is cleared</span></div>
+  <div id="drchips"></div>
+  <div class="resume" id="drresume" hidden>
+    <span id="drresumetxt"></span>
+    <button id="drres" data-tip="Continue the drill where you left off">Resume ▸</button>
+    <button id="drdis" class="link" data-tip="Drop the unfinished drill. Its answers stay in your progress.">Discard</button>
+  </div>
+  <div class="btnrow">
+    <button id="drbegin" data-tip="Start drilling the selected topics. No countdown; it ends when every topic is cleared." disabled>Pick a topic</button>
+    <button id="drback" class="ghost" data-tip="Back to the start screen">Back</button>
+  </div>
+</section>
+
+<!-- ===================== DRILL: QUESTION ===================== -->
+<section id="drill" hidden>
+  <div class="drhead">
+    <div><span class="dreye">Drill</span><span class="drtag" id="drtag"></span></div>
+    <div class="drmeta">
+      <span id="drcount">Q 1</span>
+      <span class="drpill" id="drpill" data-tip="Time on this question. No limit; past 5:00 (exam pace) the clock turns dark."><svg class="ico sm" aria-hidden="true"><use href="#i-clock"/></svg><b id="drtime">0:00</b></span>
+    </div>
+  </div>
+  <div class="qcard" id="drcard">
+    <div class="qtext" id="drstem"></div>
+    <div class="xopts" id="dropts" role="radiogroup" aria-label="Answer choices"></div>
+    <div class="drfb" id="drfb" hidden>
+      <strong class="verdict" id="drverdict" aria-live="polite"></strong>
+      <div id="drexplain"></div>
+    </div>
+  </div>
+  <div class="btnrow xctl">
+    <button id="drnext" hidden data-tip="Next question (Enter)">Next ▸</button>
+    <button id="drstop" class="link push" data-tip="End the drill and see the summary. Every answer so far is saved.">End drill</button>
+  </div>
+  <div class="drail" id="drail" aria-label="Progress on each topic" data-tip="Last answers per topic: filled = right within 5:00, outline = right but slow, ✕ = missed."></div>
+  <p class="fine">A–F choose · Enter next</p>
+</section>
+
+<!-- ===================== DRILL: SUMMARY ===================== -->
+<section id="ddone" hidden>
+  <h1 id="drhead">Drill complete</h1>
+  <p class="best" id="drline"></p>
+  <div class="stats">
+    <div class="stat"><b id="drQ">0</b><span>answered</span></div>
+    <div class="stat"><b id="drAcc">0%</b><span>right</span></div>
+    <div class="stat"><b id="drAvg">–</b><span>per question</span></div>
+    <div class="stat"><b id="drTot">0:00</b><span>total</span></div>
+  </div>
+  <div class="tablebox">
+    <table id="drtable"><thead><tr>
+      <th>Topic</th><th class="num">Right</th><th class="num">Avg</th><th>Cleared</th>
+    </tr></thead><tbody></tbody></table>
+  </div>
+  <div id="drmisswrap" hidden>
+    <h2>Misses</h2>
+    <ol class="missed xrev" id="drmiss"></ol>
+  </div>
+  <div class="btnrow">
+    <button id="dragain" data-tip="Same topics again, the ones not cleared first">Drill again ▸</button>
+    <button id="drnew" class="ghost" data-tip="Pick different topics">New drill</button>
+    <button id="drhome" class="ghost" data-tip="Back to the start screen">Back to start</button>
+  </div>
+</section>

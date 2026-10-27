@@ -6,6 +6,7 @@ Free exam practice for Purdue classes that runs in your browser. Pick a class, t
 |---|---|---|
 | **PHYS 172** | Exam 1 (HW01–HW10), Exam 2 (HW11–HW15) | Sprint · Mock exam (15 Q, 60 min) · Drill · Progress |
 | **MA 261** | Exam 1 (12.1, Ch 13–15) | Mock exam (12 Q, 60 min) · the real Fall 2026 exam · Diagnostic · Sprint · Quadric surfaces · Progress |
+| | Exam 2 (15.8, 16.1–17.6) | Mock exam (12 Q, A–F, 60 min) · Drill · Diagnostic · Sprint · Study sheet · Progress |
 
 Every mock exam is timed like the real one (60 minutes). Problems use fresh numbers every time, every wrong
 choice in a mock exam is a common trap with an explanation, and every miss has a worked solution.
@@ -37,6 +38,7 @@ bash tests/run_all.sh                   # build + every check
 | `src/` | the shared engine for the PHYS pages, one file per module (map in `docs/DEV_NOTES.md` §2) |
 | `packs/<exam>/` | one exam's content for that engine: generators, figures, mock exam, taxonomy, `pack.json` labels |
 | `apps/ma261-exam1/` | the MA 261 page, which has its own engine (`build_app.py`, `theme.css`, `src/`) |
+| `apps/ma261-exam2/` | MA 261 Exam 2 on the same engine: content in `src/h2.js`, `c16a.js`, `c16b.js`, `c17.js`, `reg2.js`; sympy checks in `tests/` |
 | `build.py` | builds the class picker, the exam pickers and every exam page into `dist/`, each with a Content-Security-Policy |
 | `static/` | files copied into the site as is (favicon) |
 | `vendor/katex/` | KaTeX 0.16.11 (MIT license, see `vendor/katex/LICENSE.txt`) shipped with the page |

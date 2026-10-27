@@ -13,7 +13,9 @@
       "id": "ma261", "name": "MA 261", "full": "Multivariate Calculus",
       "exams": [
         {"id": "exam1", "name": "Exam 1", "topics": "Vectors, lines and planes, vector functions, partial derivatives", "tag": "12.1 · Ch 13–15",
-         "app": "ma261-exam1", "ns": "ma261-sprint", "total": 100}
+         "app": "ma261-exam1", "ns": "ma261-sprint", "total": 100},
+        {"id": "exam2", "name": "Exam 2", "topics": "Lagrange, double & triple integrals, line integrals, Green, surfaces", "tag": "15.8 · 16.1–17.6",
+         "app": "ma261-exam2", "ns": "ma261-e2", "total": 100}
       ]
     }
   ]

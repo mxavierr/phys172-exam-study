@@ -15,6 +15,7 @@ The app is a static site, no server, no accounts. Progress is kept in each stude
 |---|---|
 | `/` class picker, `/<class>/` exam picker | `site/hub.html` (tiles show the best mock-exam score saved in this browser) |
 | `/phys172/exam1/`, `/phys172/exam2/` | the shared engine `src/` + that exam's pack `packs/<pack>/` (a pack file replaces the engine file of the same name; `pack.json` fills the `{{PLACEHOLDERS}}`) |
+| `/ma261/exam2/` | `apps/ma261-exam2/` (the Exam 1 engine with Exam 2 content: problem builders `c16a/c16b/c17.js` registered in `reg2.js` as sprint generators and six-choice mock-exam templates; drill `drill.js`; study sheet `sheet.html`; independent sympy re-solve of every answer in `apps/ma261-exam2/tests/`) |
 | `/ma261/exam1/` | `apps/ma261-exam1/` (its own engine, built by its `build_app.py`; `theme.css` maps it onto the shared look, copying the header/tile/welcome/tooltip rules from `src/01_style.css`) |
 
 A pack provides: `10p_pack.js` (K, CONST_TEX, EXAM_OUT, GROUPS), `11_figs.js`, `2x_gen_*.js`, `30_exam_gen.js`

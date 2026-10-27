@@ -1,0 +1,941 @@
+<style>
+
+  :root{
+    --paper:#F1F3EE; --grid:#D8E2DB; --ink:#16232B; --ink-soft:#56696E; --rule:#A7B5B0;
+    --field:#FFFFFF; --brick:#B83F27; --moss:#2C6A4D; --slate:#1F4E79; --on-ink:#F1F3EE;
+    --tick:rgba(241,243,238,.5);
+    --sans:"IBM Plex Sans",ui-sans-serif,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    --inst:"IBM Plex Mono",ui-monospace,"SF Mono",Menlo,Consolas,"Liberation Mono",monospace;
+    color-scheme:light;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --paper:#11171A; --grid:#1B2529; --ink:#E3EAE6; --ink-soft:#97A9A7; --rule:#3A494E;
+      --field:#0A1012; --brick:#EE7B61; --moss:#6DC196; --slate:#8FBBE8; --on-ink:#11171A;
+      --tick:rgba(17,23,26,.45); color-scheme:dark;
+    }
+  }
+  :root[data-theme="dark"]{
+    --paper:#11171A; --grid:#1B2529; --ink:#E3EAE6; --ink-soft:#97A9A7; --rule:#3A494E;
+    --field:#0A1012; --brick:#EE7B61; --moss:#6DC196; --slate:#8FBBE8; --on-ink:#11171A;
+    --tick:rgba(17,23,26,.45); color-scheme:dark;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{
+    background:
+      linear-gradient(var(--grid) 1px, transparent 1px) 0 0/100% 26px,
+      linear-gradient(90deg, var(--grid) 1px, transparent 1px) 0 0/26px 100%,
+      var(--paper);
+    background-color:var(--paper);
+    color:var(--ink); font-family:var(--sans); font-size:16px; line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:680px;margin:0 auto;padding:0 20px;padding-block:34px 64px}
+  .inst{font-family:var(--inst);font-variant-numeric:tabular-nums}
+
+  h1{font-size:40px;line-height:1.04;letter-spacing:-.02em;font-weight:700;margin:0 0 8px;text-wrap:balance}
+  h2{font-size:20px;margin:32px 0 6px;font-weight:600;text-wrap:balance}
+  .sub{color:var(--ink-soft);margin:0 0 24px;max-width:56ch}
+
+  /* ---------- clock: the hero ---------- */
+  .clock{margin:0 0 24px}
+  .clockhead{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:8px}
+  .bigtime{font-family:var(--inst);font-size:54px;line-height:1;font-weight:600;letter-spacing:-.03em}
+  .bigtime.low{color:var(--brick)}
+  .qcount{color:var(--ink-soft);font-size:14px;text-align:right}
+  .qcount b{display:block;font-family:var(--inst);font-size:15px;font-weight:500;color:var(--ink-soft);
+            font-variant-numeric:tabular-nums;margin-top:2px}
+  .qcount b.over{color:var(--brick)}
+  .bigtime.over{color:var(--brick)}
+  .gauge{position:relative;height:16px;border:1.5px solid var(--ink);background:var(--field);overflow:hidden}
+  .fill{position:absolute;inset:0 auto 0 0;background:var(--ink);width:100%}
+  .fill.low{background:var(--brick)}
+  .ticks{position:absolute;inset:0;display:flex;pointer-events:none}
+  .ticks i{flex:1;border-right:1px solid var(--tick)}
+  .ticks i:last-child{border-right:0}
+
+  /* ---------- constants: always on screen ---------- */
+  .consts{display:grid;grid-template-columns:repeat(4,1fr);margin-top:10px;
+          border-top:1px solid var(--rule);border-left:1px solid var(--rule);background:var(--field)}
+  .consts div{padding:5px 6px;border-right:1px solid var(--rule);border-bottom:1px solid var(--rule);
+              font-family:var(--inst);font-size:12px;white-space:nowrap;text-align:center}
+  .consts span{color:var(--ink-soft)}
+  .consts sup{font-size:.72em;line-height:0}
+
+  /* ---------- question ---------- */
+  .qcard{border-top:2px solid var(--ink);padding-top:16px;min-height:200px}
+  .tags{display:flex;align-items:center;flex-wrap:wrap;gap:6px 10px;margin-bottom:12px}
+  .lvl{display:inline-flex;align-items:center;gap:7px;font-size:13px;font-weight:600;color:var(--ink-soft);margin-left:auto}
+  .lvl .pips{display:inline-flex;gap:3px}
+  .lvl .pips i{display:block;width:7px;height:12px;border:1.5px solid currentColor}
+  .lvl .pips i.on{background:currentColor}
+  .lvl.l2{color:var(--slate)}
+  .lvl.l3{color:var(--ink)}
+  .lvl em{font-style:normal;font-weight:500;color:var(--ink-soft)}
+  .tag{display:inline-block;font-size:12.5px;color:var(--slate);border:1px solid var(--slate);
+       border-radius:2px;padding:1px 7px}
+  .hw{font-size:13px;font-weight:600;color:var(--ink-soft);font-variant-numeric:tabular-nums}
+  .qtext{font-size:20px;line-height:1.45;margin:0 0 4px;max-width:62ch}
+  .v{white-space:nowrap;font-family:var(--inst);font-size:.9em;background:var(--field);
+     border:1px solid var(--rule);padding:0 4px;border-radius:2px}
+  sup{font-size:.7em}
+
+  .answerrow{display:flex;gap:10px;align-items:stretch;margin-top:20px}
+  #ans{
+    flex:1;min-width:0;font-family:var(--inst);font-size:22px;padding:11px 13px;
+    border:1.5px solid var(--ink);border-radius:0;background:var(--field);color:var(--ink);outline:none;
+  }
+  #ans::placeholder{color:var(--ink-soft);opacity:.75}
+  #ans:focus{box-shadow:inset 0 0 0 2px var(--slate)}
+  .unit{align-self:center;font-family:var(--inst);font-size:16px;color:var(--ink-soft);min-width:64px}
+  button{
+    font:inherit;font-size:16px;font-weight:600;padding:11px 18px;border:1.5px solid var(--ink);
+    background:var(--ink);color:var(--on-ink);cursor:pointer;border-radius:0;
+  }
+  button.ghost{background:transparent;color:var(--ink)}
+  button.link{background:none;border:0;padding:2px 4px;font-size:13.5px;font-weight:500;
+              color:var(--slate);text-decoration:underline;text-underline-offset:3px}
+  button:hover{opacity:.88}
+  button:focus-visible,#ans:focus-visible,.chip:focus-visible{outline:2.5px solid var(--slate);outline-offset:2px}
+
+  .verdict{min-height:26px;margin-top:11px;font-size:15.5px}
+  .verdict.ok{color:var(--moss)}
+  .verdict.no{color:var(--brick)}
+  .hintline{margin-top:12px;font-size:13.5px;color:var(--ink-soft)}
+
+  .stats{display:flex;margin-top:26px;border-top:1px solid var(--rule)}
+  .stat{flex:1;padding:11px 0 0 12px;border-right:1px solid var(--rule)}
+  .stat:first-child{padding-left:0}
+  .stat:last-child{border-right:0}
+  .stat b{display:block;font-family:var(--inst);font-size:26px;font-weight:600;line-height:1.15}
+  .stat span{font-size:13px;color:var(--ink-soft)}
+
+  /* ---------- start / results ---------- */
+  .rules{border-left:3px solid var(--ink);padding:2px 0 2px 15px;margin:22px 0;font-size:15.5px}
+  .rules p{margin:0 0 7px}
+  .rules p:last-child{margin:0}
+  .field{margin:22px 0}
+  .field > p{margin:0 0 9px;font-size:15px;color:var(--ink-soft)}
+  .group{margin:0 0 16px}
+  .grouphead{display:flex;align-items:baseline;flex-wrap:wrap;gap:4px 12px;margin:0 0 8px}
+  .grouphead b{font-size:15px;font-weight:600}
+  .grouphead em{font-style:normal;font-size:14px;color:var(--ink-soft)}
+  .grouphead .acts{margin-left:auto;display:flex;gap:6px}
+  .presets{display:flex;flex-wrap:wrap;gap:12px;margin:0 0 12px}
+  .fine{font-size:13.5px;color:var(--ink-soft);margin:9px 0 0;max-width:62ch}
+  .chips{display:flex;flex-wrap:wrap;gap:7px}
+  .chip{border:1.5px solid var(--rule);background:var(--field);color:var(--ink-soft);
+        padding:6px 11px;font-size:14px;cursor:pointer;user-select:none;border-radius:0}
+  .chip.on{border-color:var(--ink);background:var(--ink);color:var(--on-ink)}
+  .chip small{font-size:11.5px;opacity:.75;margin-left:5px;font-variant-numeric:tabular-nums}
+  .best{font-size:15px;color:var(--ink-soft);margin-top:12px}
+
+  .tablebox{overflow-x:auto}
+  table{width:100%;border-collapse:collapse;font-size:15px;margin-top:6px}
+  th,td{text-align:left;padding:7px 8px;border-bottom:1px solid var(--rule)}
+  th{font-weight:600;font-size:13.5px;color:var(--ink-soft)}
+  td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
+  td.hwcol{color:var(--ink-soft);font-size:14px;white-space:nowrap}
+  ol.missed{padding-left:22px;margin:10px 0 0}
+  .missed li{margin-bottom:16px;font-size:15px;line-height:1.5}
+  .missed .meta{display:block;font-size:13px;font-weight:600;color:var(--ink-soft);margin-bottom:2px}
+  .missed .yours{display:block;color:var(--brick)}
+  .missed .right{display:block;color:var(--moss)}
+  .missed .how{display:block;color:var(--ink-soft);font-size:14px}
+  .btnrow{margin-top:30px;display:flex;gap:10px;flex-wrap:wrap}
+  .chartbox{margin-top:10px}
+  .chartbox svg{width:100%;height:auto;display:block}
+  .chartbox .grid{stroke:var(--rule);stroke-width:1;opacity:.5}
+  .chartbox .axis{stroke:var(--rule);stroke-width:1.5}
+  .chartbox .target{stroke:var(--ink);stroke-width:2;stroke-dasharray:5 4;opacity:.7}
+  .chartbox .ax{fill:var(--ink-soft);font-size:11px;font-family:var(--sans)}
+  .chartbox rect.ok{fill:var(--moss)}
+  .chartbox rect.no{fill:var(--brick)}
+  .legend{display:flex;flex-wrap:wrap;gap:16px;margin-top:8px;font-size:13px;color:var(--ink-soft)}
+  .legend i{display:inline-block;width:10px;height:10px;margin-right:6px}
+  .legend i.ok{background:var(--moss)}
+  .legend i.no{background:var(--brick)}
+  .legend i.tgt{width:14px;height:0;border-top:2px dashed var(--ink);opacity:.7;vertical-align:4px}
+  .fold{margin-top:12px}
+  .fold summary{cursor:pointer;font-size:14px;font-weight:600;color:var(--slate);padding:2px 0}
+  .chartbox .line{fill:none;stroke:var(--slate);stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
+  .chartbox circle.pt{fill:var(--slate)}
+  .legend i.ln{width:14px;height:0;border-top:2.5px solid var(--slate);vertical-align:4px}
+
+  /* ---------- progress ---------- */
+  .weakrow{padding:11px 0;border-bottom:1px solid var(--rule)}
+  .weakrow:first-child{border-top:1px solid var(--rule)}
+  .weakhead{display:flex;align-items:baseline;flex-wrap:wrap;gap:3px 10px}
+  .weakhead b{font-size:15.5px;font-weight:600}
+  .weakhead em{font-style:normal;font-size:13.5px;color:var(--ink-soft);margin-left:auto;
+               font-variant-numeric:tabular-nums}
+  .bar{height:8px;background:var(--field);border:1px solid var(--rule);margin:8px 0 7px}
+  .bar i{display:block;height:100%;background:var(--brick)}
+  .key{margin:0;font-size:13.5px;color:var(--ink-soft);max-width:62ch}
+  td .how{display:block;font-size:13px;color:var(--ink-soft);margin-top:1px}
+  .panel{border-left:3px solid var(--slate);padding:2px 0 2px 15px;margin:10px 0 0;font-size:15.5px}
+  .panel p{margin:0 0 6px}
+  .panel p:last-child{margin:0}
+  .panel .num{font-family:var(--inst);font-size:26px;font-weight:600;line-height:1.2;display:block}
+
+  .sol{margin-top:10px;border-left:2px solid var(--rule);padding:2px 0 2px 14px}
+  .sol summary{cursor:pointer;font-weight:600;font-size:14.5px;color:var(--slate);padding:2px 0}
+  .sol .key{margin:8px 0 6px;font-size:14px;color:var(--ink-soft)}
+  .aisol{border-left-color:var(--slate)}
+  .aisol .key b{color:var(--ink)}
+  .aiwait{margin:10px 0 0;font-size:13.5px;color:var(--ink-soft);font-style:italic}
+  .aistat{margin:8px 0 0;font-size:14px;color:var(--ink-soft)}
+  ul.aitraps{margin:2px 0 8px;padding-left:20px;font-size:14px;color:var(--ink-soft)}
+  ul.aitraps li{margin:0 0 6px;line-height:1.45}
+  ol.steps{margin:6px 0 2px;padding-left:22px}
+  ol.steps li{margin:0 0 10px;font-size:14.5px;line-height:1.5}
+  ol.steps p{margin:0 0 2px}
+  .eq{overflow-x:auto;overflow-y:hidden;max-width:100%;font-size:15.5px;padding:1px 0}
+  .eq.raw{font-family:var(--inst);font-size:13px;color:var(--ink-soft);white-space:pre-wrap;word-break:break-word}
+  .eq mjx-container[display="true"]{margin:3px 0!important}
+  .missed .pts{font-weight:500}
+  /* ---------- diagrams ---------- */
+  .qfig{margin:12px 0 2px}
+  .fig{display:block;width:100%;height:auto;overflow:visible}
+  .fig .s{stroke:var(--ink-soft);stroke-width:1.5}
+  .fig .h{stroke:var(--rule);stroke-width:1}
+  .fig .r{stroke:var(--ink);stroke-width:2;stroke-linecap:round}
+  .fig .d{stroke:var(--ink-soft);stroke-width:1.2;stroke-dasharray:4 3;fill:none}
+  .fig .dim{stroke:var(--ink-soft);stroke-width:1.2}
+  .fig .a{stroke:var(--slate);stroke-width:1.6;fill:none}
+  .fig .b{fill:var(--field);stroke:var(--ink);stroke-width:1.5}
+  .fig .car{fill:none;stroke:var(--ink-soft);stroke-width:1.5;stroke-dasharray:6 4}
+  .fig .sp{fill:none;stroke:var(--ink);stroke-width:1.3;stroke-linejoin:round}
+  .fig .k{fill:var(--ink)}
+  .fig .w{fill:var(--field);stroke:var(--ink);stroke-width:1.5}
+  .fig .ball{fill:var(--ink)}
+  .fig .f{stroke:var(--brick);stroke-width:2.2;stroke-linecap:round}
+  .fig .fh{fill:var(--brick)}
+  .fig .v{stroke:var(--slate);stroke-width:2;stroke-linecap:round}
+  .fig .vh{fill:var(--slate)}
+  .fig text{font-family:var(--sans);font-size:13px;fill:var(--ink);
+            paint-order:stroke;stroke:var(--paper);stroke-width:3.5px;stroke-linejoin:round}
+  .fig text.in{stroke:none;font-weight:600}
+  .fig text.ta{fill:var(--slate);font-weight:600}
+  .fig text.fl{fill:var(--brick);font-weight:600}
+  .fig text.t2{fill:var(--ink-soft);font-size:12px}
+  .missed .qfig{max-width:340px}
+  .fig .rh{fill:var(--ink)}
+  .fig .qp{fill:var(--field);stroke:var(--slate);stroke-width:2}
+  .fig .qn{fill:var(--field);stroke:var(--brick);stroke-width:2}
+  .fig .oval{fill:none;stroke:var(--ink-soft);stroke-width:1.4;stroke-dasharray:6 4}
+  .fig .ramp{fill:var(--grid);stroke:var(--ink-soft);stroke-width:1.5}
+    /* ---------- answer entry ---------- */
+  .syntax{display:grid;grid-template-columns:repeat(4,1fr);margin-top:10px;
+          border-top:1px solid var(--rule);border-left:1px solid var(--rule);background:var(--field)}
+  .syntax div{padding:5px 6px;border-right:1px solid var(--rule);border-bottom:1px solid var(--rule);
+              font-family:var(--inst);font-size:12px;white-space:nowrap;text-align:center;overflow:hidden;text-overflow:ellipsis}
+  .syntax span{color:var(--ink-soft)}
+  .qtext.wait{visibility:hidden}
+  .qtext mjx-container{font-size:105%}
+  .fmt{font-size:13.5px;color:var(--ink-soft);margin:14px 0 0}
+  .preview{min-height:44px;margin-top:8px;padding:6px 10px;border:1px dashed var(--rule);background:var(--field);
+           display:flex;align-items:center;gap:10px;overflow-x:auto;overflow-y:hidden}
+  .preview .lab{font-size:12px;color:var(--ink-soft);white-space:nowrap;font-family:var(--inst)}
+  .preview .err{font-size:13.5px;color:var(--brick)}
+  .preview .pv{font-size:16px}
+  .keypad{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+  .keypad button{font-family:var(--inst);font-size:14px;font-weight:500;padding:6px 10px;min-width:40px;
+                 background:var(--field);color:var(--ink);border:1.5px solid var(--rule)}
+  .mopts{display:flex;flex-direction:column;gap:8px;margin-top:18px}
+  .mopt{display:flex;align-items:baseline;gap:12px;text-align:left;font-weight:400;font-size:16px;line-height:1.45;
+        background:var(--field);color:var(--ink);border:1.5px solid var(--rule);padding:10px 12px;width:100%}
+  .mopt b{font-family:var(--inst);font-weight:600;min-width:18px;color:var(--ink-soft)}
+  .mopt:hover{border-color:var(--ink);opacity:1}
+  .mopt.pick-ok{border-color:var(--moss);box-shadow:inset 0 0 0 1.5px var(--moss)}
+  .mopt.pick-no{border-color:var(--brick);box-shadow:inset 0 0 0 1.5px var(--brick)}
+  .modehint{font-size:13px;color:var(--ink-soft);margin-top:10px}
+  button[disabled]{opacity:.45;cursor:not-allowed}
+  button[disabled]:hover{opacity:.45}
+  .soon{font-size:12px;font-weight:500;margin-left:6px;opacity:.9}
+  .missed .yours .pv,.missed .right .pv{display:inline-block;vertical-align:middle}
+  .missed .trap{display:block;margin:6px 0 0;font-size:14px;border-left:2px solid var(--brick);padding:1px 0 1px 10px}
+  .missed .opts{display:block;margin:6px 0 0;font-size:14.5px}
+  .missed .opts span{display:block;padding:1px 0 1px 26px;position:relative}
+  .missed .opts span i{position:absolute;left:0;font-style:normal;font-family:var(--inst);font-weight:600}
+  .missed .opts span.key{color:var(--moss);font-weight:500}
+  .missed .opts span.bad{color:var(--brick)}
+  /* ---------- work photos & session export ---------- */
+  .photos{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:10px}
+  .photos img{width:64px;height:64px;object-fit:cover;border:1px solid var(--rule);display:block}
+  .photos .ph{position:relative}
+  .photos .ph button{position:absolute;top:-8px;right:-8px;width:22px;height:22px;padding:0;border-radius:50%;font-size:13px;line-height:1;
+                     background:var(--paper);color:var(--ink);border:1.5px solid var(--ink)}
+  .photos label{font-size:13.5px;font-weight:600;color:var(--slate);cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+  .photos input{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none}
+  .photos .note{font-size:12.5px;color:var(--ink-soft)}
+  .export{border:1.5px solid var(--ink);background:var(--field);padding:14px 16px;margin:28px 0 0}
+  .export h2{margin:0 0 6px}
+  .export p{margin:0 0 8px;font-size:15px}
+  .export .fine{margin-top:6px}
+  .export .status{font-size:14px;color:var(--moss);min-height:20px;margin-top:6px}
+  .export .status.no{color:var(--brick)}
+  td .dl{font-size:13.5px;padding:2px 4px}
+  @media (max-width:520px){
+    .syntax{grid-template-columns:repeat(2,1fr)}
+    .keypad button{min-width:36px;padding:6px 8px}
+  }
+  /* ---------- mock exam ---------- */
+  .xbar{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:8px}
+  .xnote{font-family:var(--inst);font-size:12.5px;color:var(--ink-soft);margin:10px 0 0;padding:6px 8px;
+         border:1px solid var(--rule);background:var(--field)}
+  .xnav{display:flex;flex-wrap:wrap;gap:6px;margin:16px 0 18px;align-items:center}
+  .xnav button{min-width:36px;padding:6px 0;font-family:var(--inst);font-size:14px;font-weight:500;
+               background:var(--field);color:var(--ink);border:1.5px solid var(--rule);position:relative}
+  .xnav button.ans{background:var(--ink);color:var(--on-ink);border-color:var(--ink)}
+  .xnav button.cur{outline:2.5px solid var(--slate);outline-offset:2px}
+  .xnav button.flag::after{content:'';position:absolute;top:-5px;right:-5px;width:9px;height:9px;border-radius:50%;
+                           background:var(--brick);border:1.5px solid var(--paper)}
+  .xopts{display:flex;flex-direction:column;gap:8px;margin-top:16px}
+  .xopt{display:flex;align-items:baseline;gap:12px;text-align:left;font-weight:400;font-size:16px;line-height:1.45;
+        background:var(--field);color:var(--ink);border:1.5px solid var(--rule);padding:10px 12px;width:100%}
+  .xopt b{font-family:var(--inst);font-weight:600;min-width:18px;color:var(--ink-soft)}
+  .xopt:hover{border-color:var(--ink);opacity:1}
+  .xopt[aria-checked="true"]{border-color:var(--ink);box-shadow:inset 0 0 0 1.5px var(--ink)}
+  .xopt[aria-checked="true"] b{color:var(--slate)}
+  .xopt span{min-width:0;overflow-x:auto;overflow-y:hidden}
+  #xstem.wait,#xopts.wait{visibility:hidden}
+  #xstem{max-width:100%;overflow-x:auto;overflow-y:hidden}
+  .xopt span{flex:1}
+  .xrev li{overflow-x:auto;overflow-y:hidden}
+  .xrev .opt{overflow-x:auto;overflow-y:hidden}
+  #xstem mjx-container{font-size:105%}
+  .xctl{margin-top:22px}
+  .xctl .push{margin-left:auto}
+  .xrev .opt{display:block;font-size:14.5px;padding:1px 0 1px 30px;position:relative}
+  .xrev .opt i{position:absolute;left:0;font-style:normal;font-family:var(--inst);font-weight:600}
+  .xrev .opt.key{color:var(--moss);font-weight:500}
+  .xrev .opt.bad{color:var(--brick)}
+  .xrev .whyno{display:block;margin:8px 0 0;font-size:14px;border-left:2px solid var(--brick);padding:1px 0 1px 10px}
+  .xrev li.okq .meta{color:var(--moss)}
+  ol.xrev{list-style:none;padding-left:0}
+  .xrev li.xtopic{margin:26px 0 8px;padding-top:8px;border-top:2px solid var(--ink);font-size:16px}
+  .xrev li.xtopic span{font-size:13.5px;color:var(--ink-soft);margin-left:6px}
+  .xrev li.xq{padding-left:2px}
+  td.bad{color:var(--brick)} td.good{color:var(--moss)}
+  .xbarcell{white-space:nowrap;width:40%}
+  .xb{display:inline-block;width:calc(100% - 48px);height:8px;background:var(--field);border:1px solid var(--rule);vertical-align:middle;margin-right:8px}
+  .xb i{display:block;height:100%;background:var(--moss)}
+  table.xtab{width:auto;margin:10px 0 2px;font-size:15px}
+  table.xtab th,table.xtab td{padding:4px 14px 4px 0;text-align:right}
+  table.xtab th:first-child,table.xtab td:first-child{text-align:left}
+  .resume{margin-top:14px;font-size:15px;border-left:3px solid var(--brick);padding:2px 0 2px 12px}
+  @media (max-width:520px){ .xctl .push{margin-left:0;flex-basis:100%} .xbarcell{width:auto} .xb{width:60px} }
+  /* ---------- Exam 2 figures: vector-field arrows, paths ---------- */
+  .qfig2{margin:12px 0 4px;max-width:320px}
+  .qfig2 .vfig{display:block;width:100%;height:auto;border:1px solid var(--rule);background:var(--field);border-radius:12px}
+  .vfig .vax{stroke:var(--ink-soft);stroke-width:1}
+  .vfig .varr{stroke:var(--ink);stroke-width:1.6;stroke-linecap:round}
+  .vfig .vhead{fill:var(--ink)}
+  .vfig .vdot{fill:var(--ink)}
+  .vfig .vpath{fill:none;stroke:var(--ink);stroke-width:2.2;stroke-linejoin:round;stroke-linecap:round}
+  .vfig .vpt{fill:var(--field);stroke:var(--ink);stroke-width:2}
+  .vfig .vlab{font-family:var(--sans);font-size:14px;font-style:italic;fill:var(--ink)}
+  .xopt .qfig2,.mopt .qfig2{margin:0}
+  /* ---------- phone photo hand-off ---------- */
+  .phonebox{position:fixed;inset:0;z-index:50;background:rgba(10,16,20,.55);display:flex;align-items:center;justify-content:center;padding:16px}
+  .phonepanel{background:var(--paper);color:var(--ink);border:1.5px solid var(--ink);max-width:560px;width:100%;padding:18px 20px;max-height:92vh;overflow:auto}
+  .phonepanel h2{margin:0 0 12px}
+  .phgrid{display:flex;gap:18px;align-items:flex-start;flex-wrap:wrap}
+  .phqr{width:180px;flex:0 0 180px;background:#fff;padding:6px;border:1px solid var(--rule)}
+  .phqr svg{display:block;width:100%;height:auto}
+  .phsteps{margin:0;padding-left:20px;flex:1 1 220px;font-size:15px}
+  .phsteps li{margin-bottom:8px}
+  .phlive{font-size:15px;font-weight:600;color:var(--moss);min-height:22px;margin:8px 0 0}
+  .ph.fromphone img{outline:2px solid var(--slate);outline-offset:1px}
+  .phonecard{border-color:var(--slate)}
+  .phlist li{margin-bottom:22px;padding-bottom:14px;border-bottom:1px solid var(--rule)}
+  .phq{font-size:15px;max-width:100%;overflow-x:auto}
+  .phbtns{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+  .phbtn{display:inline-block;font-weight:600;font-size:15px;padding:10px 16px;background:var(--ink);color:var(--on-ink);border:1.5px solid var(--ink);cursor:pointer;position:relative}
+  .phbtn.ghost{background:transparent;color:var(--ink)}
+  .phbtn input{position:absolute;inset:0;opacity:0;width:100%;cursor:pointer}
+  .phthumbs{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;align-items:center}
+  .phthumbs img{width:72px;height:72px;object-fit:cover;border:1px solid var(--rule);display:block}
+  .phthumbs .ph{position:relative}
+  .phthumbs .ph button{position:absolute;top:-8px;right:-8px;width:24px;height:24px;padding:0;border-radius:50%;font-size:14px;line-height:1;background:var(--paper);color:var(--ink);border:1.5px solid var(--ink)}
+  .phthumbs .note{font-size:13px;color:var(--ink-soft)}
+  @media (max-width:520px){ .phqr{width:150px;flex-basis:150px} }
+  /* ---------- diagnostic ---------- */
+  .dgcard{border:1.5px solid var(--ink);background:var(--field);padding:14px 16px;margin:0 0 22px}
+  .dgcard h2{margin:0 0 4px}
+  .dgcard p{margin:0 0 10px;font-size:15px}
+  .dgcard .btnrow{margin-top:6px}
+  .dgbar{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:8px}
+  .dgbar .qcount{text-align:right}
+  #dgqt.over{color:var(--brick)}
+  .conf{margin-top:14px;padding:10px 12px;border:1px dashed var(--rule);background:var(--field)}
+  .conf p{margin:0 0 8px;font-size:14px;color:var(--ink-soft)}
+  .conf .btnrow{margin-top:0;gap:8px}
+  .conf button{padding:8px 14px;font-size:15px}
+  #dgstem.wait,#dgopts.wait{visibility:hidden}
+  #dgstem{max-width:100%;overflow-x:auto;overflow-y:hidden}
+  .dgrow{padding:12px 0;border-bottom:1px solid var(--rule)}
+  .dgrow:first-child{border-top:1px solid var(--rule)}
+  .dgrow .key{margin-top:6px}
+  .dgrow .whyno{display:block;margin-top:4px;border-left:2px solid var(--brick);padding-left:8px}
+  .btnrow.tight{margin-top:6px}
+  .flag{display:inline-block;font-size:12px;font-weight:600;padding:1px 7px;border:1px solid currentColor;border-radius:2px;margin:1px 0;white-space:nowrap}
+  .flag.idk,.flag.untested{color:var(--ink-soft)}
+  .flag.sure,.flag.wrong,.flag.weak,.flag.talked{color:var(--brick)}
+  .flag.lucky,.flag.slow,.flag.shaky{color:var(--slate)}
+  .flag.ok,.flag.solid{color:var(--moss)}
+  ul.insights{padding-left:20px;margin:8px 0 0}
+  ul.insights li{margin-bottom:8px;font-size:15px;line-height:1.5}
+  .dmapch h4{margin:16px 0 6px;font-size:14px;color:var(--ink-soft);font-weight:600}
+  .dmapgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:6px}
+  .dtile{position:relative;border:1.5px solid var(--rule);background:var(--field);padding:7px 9px 8px;font-size:13px;line-height:1.3}
+  .dtile b{display:block;font-weight:600;font-size:13px;padding-right:14px}
+  .dtile span{display:block;color:var(--ink-soft);font-size:12px;margin-top:3px}
+  .dtile i{position:absolute;top:5px;right:7px;font-style:normal;font-weight:700;font-family:var(--inst)}
+  .dtile.solid{border-color:var(--moss);box-shadow:inset 4px 0 0 var(--moss)}
+  .dtile.shaky{border-color:var(--slate);box-shadow:inset 4px 0 0 var(--slate)}
+  .dtile.weak{border-color:var(--brick);box-shadow:inset 4px 0 0 var(--brick)}
+  .dtile.untested{border-style:dashed}
+  ul.dmis{padding-left:20px;margin:8px 0 0} ul.dmis li{margin-bottom:8px;font-size:14.5px}
+  ul.dmis .how{display:block;color:var(--ink-soft);font-size:13.5px}
+  @media (max-width:520px){ .dmapgrid{grid-template-columns:1fr 1fr} .conf button{flex:1 1 30%;padding:8px 6px} }
+  [hidden]{display:none!important}
+  @keyframes nudge{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+  .shake{animation:nudge .22s}
+  @keyframes rise{from{opacity:.25;transform:translateY(6px)}to{opacity:1;transform:none}}
+  .rise{animation:rise .16s ease-out}
+  @media (prefers-reduced-motion:reduce){.shake,.rise{animation:none}}
+  @media (max-width:520px){
+    .wrap{padding:0 16px;padding-block:24px 56px}
+    h1{font-size:31px}.bigtime{font-size:42px}.qtext{font-size:18px}
+    .answerrow{flex-wrap:wrap}#ans{font-size:19px;flex-basis:60%}
+    #submit{flex-basis:100%}
+    .chartbox .ax{font-size:16px}
+    .grouphead .acts{margin-left:0}
+    .eq{font-size:14px}
+  }
+</style>
+{{THEME}}
+
+<script>
+window.MathJax={
+  tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']]},
+  svg:{fontCache:'global',displayAlign:'left',displayIndent:'0'},
+  options:{enableMenu:false},
+  startup:{typeset:false}
+};
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-svg.min.js" async></script>
+
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="13" r="8"/><path d="M12 9v4.5l3 2M9.5 2.5h5M12 2.5v2.5"/></symbol>
+  <symbol id="i-exam" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></symbol>
+  <symbol id="i-doc" viewBox="0 0 24 24"><path d="M6 2.5h8l4.5 4.5v14.5H6z"/><path d="M14 2.5V7h4.5M9 12h6M9 15.5h6M9 19h4"/></symbol>
+  <symbol id="i-target" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.2"/></symbol>
+  <symbol id="i-drill" viewBox="0 0 24 24"><path d="M4 12h3l2.5-6 5 12 2.5-6h3"/></symbol>
+  <symbol id="i-cube" viewBox="0 0 24 24"><ellipse cx="12" cy="6" rx="7.5" ry="3"/><path d="M4.5 6c0 4 3 6 3 9s-3 3-3 3M19.5 6c0 4-3 6-3 9s3 3 3 3"/><ellipse cx="12" cy="18" rx="7.5" ry="2.5"/></symbol>
+  <symbol id="i-chart" viewBox="0 0 24 24"><path d="M3 20h18M6 16v-4M11 16V8M16 16v-6M21 16V5"/></symbol>
+  <symbol id="i-device" viewBox="0 0 24 24"><rect x="6" y="2.5" width="12" height="19" rx="2.5"/><path d="M10.5 18h3"/></symbol>
+  <symbol id="i-alert" viewBox="0 0 24 24"><path d="M12 3 2.5 20h19z"/><path d="M12 9.5v5M12 17.2v.3"/></symbol>
+</svg>
+<div class="wrap">
+<header class="apphead">
+  <a class="brand" id="home" href="{{ROOT}}" aria-label="BoilerCram: all classes" data-tip="All classes">
+    {{LOGO}}
+    <span class="apptitle">BoilerCram</span>
+  </a>
+  <nav class="crumbs" aria-label="You are here">
+    <a href="{{ROOT}}{{COURSE_HREF}}/" data-tip="Other {{COURSE}} exams">{{COURSE}}</a><span aria-hidden="true">/</span><button class="link" id="examhome" type="button" data-tip="This exam's start screen">{{EXAM}}</button>
+  </nav>
+</header>
+
+<!-- first visit: what each mode is for; Mock exam recommended -->
+<dialog class="welcome" id="welcome" aria-labelledby="welcometitle">
+  <h2 id="welcometitle">Welcome to BoilerCram</h2>
+  <ul class="wmodes">
+    <li class="rec"><svg class="ico"><use href="#i-exam"/></svg><b>Mock exam <em>Start here</em></b>
+      <span>12 questions, 60 minutes, A–F. Built from past Exam 2s, made harder and more conceptual, like this term.</span></li>
+    <li><svg class="ico"><use href="#i-drill"/></svg><b>Drill</b><span>Exam-level questions on the topics you pick, until each one is solid.</span></li>
+    <li><svg class="ico"><use href="#i-target"/></svg><b>Diagnostic</b><span>A few exam-level questions aimed at what you don't know yet.</span></li>
+    <li><svg class="ico"><use href="#i-clock"/></svg><b>Sprint</b><span>Timed practice by textbook section: type exact answers or pick.</span></li>
+    <li><svg class="ico"><use href="#i-doc"/></svg><b>Study sheet</b><span>Every formula, method and trap on one page.</span></li>
+    <li><svg class="ico"><use href="#i-chart"/></svg><b>Progress</b><span>Your concept map and history.</span></li>
+  </ul>
+  <div class="wfoot">
+    <small><svg class="ico sm"><use href="#i-device"/></svg>Progress saves in this browser · no account</small>
+    <button id="welcomeok">Got it</button>
+  </div>
+</dialog>
+
+<!-- ===================== START ===================== -->
+<section id="start">
+  <div class="modes six">
+    <button class="mode" id="toExam" data-tip="12 multiple-choice questions (A–F) in the Exam 2 format, 60 minutes, scored out of 100. New questions every time."><svg class="ico"><use href="#i-exam"/></svg><b>Mock exam</b><span>12 Q · 60:00</span></button>
+    <button class="mode" id="toDrill" data-tip="Exam-level questions on the topics you choose, with the answer and solution after each one. Ends when every topic is cleared."><svg class="ico"><use href="#i-drill"/></svg><b>Drill</b><span>Exam questions · by topic</span></button>
+    <button class="mode" id="toDiag" data-tip="4 to 8 exam-level questions aimed at the concepts you have not shown you know. No clock."><svg class="ico"><use href="#i-target"/></svg><b>Diagnostic</b><span>Finds your gaps</span></button>
+    <button class="mode" id="goTop" data-tip="Timed practice with fresh numbers, by textbook section. Set the answer style, length and topics below."><svg class="ico"><use href="#i-clock"/></svg><b>Sprint</b><span>Typed or choice · timed</span></button>
+    <button class="mode" id="toSheet" data-tip="Formulas, how to choose a method, and the traps that cost points, for every Exam 2 topic."><svg class="ico"><use href="#i-doc"/></svg><b>Study sheet</b><span>Formulas · traps</span></button>
+    <button class="mode" id="toProg" data-tip="Your concept map, weak spots and every past sprint, drill, diagnostic and exam."><svg class="ico"><use href="#i-chart"/></svg><b>Progress</b><span>Concepts · history</span></button>
+  </div>
+  <div class="resume" id="xresume" hidden></div>
+
+  <h2>Sprint</h2>
+  <div class="setrow">
+    <div class="chips" id="modechips">
+      <div class="chip on" data-mode="type" role="button" tabindex="0" aria-pressed="true" data-tip="Type the exact answer: 9pi/2, (e^4 - 1)/2, 5sqrt(30), 2ln(2), &lt;1,-2,3&gt;. Any equivalent form counts.">Type it</div>
+      <div class="chip" data-mode="mcq" role="button" tabindex="0" aria-pressed="false" data-tip="Pick from up to six choices. Every wrong choice is a real mistake, explained when you pick it.">Multiple choice</div>
+    </div>
+    <div class="chips" id="durchips">
+      <div class="chip" data-dur="600" role="button" tabindex="0" data-tip="10-minute sprint">10 min</div>
+      <div class="chip on" data-dur="1200" role="button" tabindex="0" data-tip="20-minute sprint">20 min</div>
+      <div class="chip" data-dur="1800" role="button" tabindex="0" data-tip="30-minute sprint">30 min</div>
+      <div class="chip" data-dur="3600" role="button" tabindex="0" data-tip="60-minute sprint">60 min</div>
+    </div>
+    <div class="chips"><div class="chip on" id="bonuschip" role="button" tabindex="0" aria-pressed="true" data-tip="Each correct answer under 5:00 adds a minute, plus the seconds you had left on the 5:00 pace.">+ Time bonus</div></div>
+  </div>
+  <div class="presets">
+    <button class="link" id="allTopics" data-tip="Every Exam 2 topic">All Exam 2 topics</button>
+    <button class="link" id="noConcepts" data-tip="Leave out the true/false concept checks">No true/false</button>
+  </div>
+  <div id="groups"></div>
+  <div class="btnrow">
+    <button id="go" data-tip="Start with the settings above">Start ▸</button>
+    <span class="best" id="bestline"></span>
+  </div>
+</section>
+
+<!-- ===================== PLAY ===================== -->
+<section id="play" hidden>
+  <div class="clock">
+    <div class="clockhead">
+      <div class="bigtime" id="time">20:00</div>
+      <div class="qcount"><span id="qnum">Question 1</span><b id="qtimer">0:00</b></div>
+    </div>
+    <div class="gauge"><div class="fill" id="fill"></div><div class="ticks" id="ticks"></div></div>
+    <div class="syntax" id="syntax" aria-label="Answer syntax">
+      <div>√ <span>sqrt(2)</span></div>
+      <div>π <span>pi</span></div>
+      <div>eˣ <span>e^(2x)</span></div>
+      <div>⟨⟩ <span>&lt;1,-2,3&gt;</span></div>
+      <div>power <span>(e^2-1)^2</span></div>
+      <div>frac <span>3pi/4</span></div>
+      <div>trig <span>sin(1)</span></div>
+      <div>log <span>ln(2)</span></div>
+    </div>
+  </div>
+
+  <div class="qcard" id="qcard">
+    <div class="tags"><span class="tag" id="tag">Vectors</span><span class="hw" id="hwtag">13.1</span><span class="lvl" id="lvl"></span></div>
+    <div class="qtext" id="qtext"></div>
+    <div class="qfig" id="qfig" hidden></div>
+
+    <div id="typebox">
+      <p class="fmt" id="fmt"></p>
+      <div class="answerrow">
+        <input type="text" id="ans" inputmode="text" autocomplete="off" autocapitalize="off"
+               spellcheck="false" aria-label="Your answer" placeholder="your answer">
+        <button id="submit">Enter</button>
+      </div>
+      <div class="preview" id="preview" aria-live="polite"><span class="lab">reads as</span><span class="pv" id="pv"></span></div>
+      <div class="keypad" id="keypad" aria-label="Symbols">
+        <button data-k="sqrt()" data-b="1">√</button><button data-k="pi">π</button><button data-k="^">^</button>
+        <button data-k="()" data-b="1">( )</button><button data-k="<>" data-b="1">⟨ ⟩</button><button data-k=", ">,</button>
+        <button data-k="/">/</button><button data-k="e^()" data-b="1">eˣ</button><button data-k="ln()" data-b="1">ln</button>
+        <button data-k="sin()" data-b="1">sin</button><button data-k="cos()" data-b="1">cos</button><button data-k="-">−</button>
+      </div>
+    </div>
+
+    <div id="mcqbox" hidden>
+      <div class="mopts" id="mopts" role="radiogroup" aria-label="Answer choices"></div>
+      <p class="modehint">Tap an answer, or press A–F.</p>
+    </div>
+
+    <div class="verdict" id="verdict" aria-live="polite"></div>
+    <div class="hintline" id="hintline">Enter on an empty box skips. Press Esc to end early.</div>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><b id="sScore">0</b><span>points</span></div>
+    <div class="stat"><b id="sCorrect">0</b><span>solved</span></div>
+    <div class="stat"><b id="sStreak">0</b><span>streak</span></div>
+  </div>
+</section>
+
+<!-- ===================== RESULTS ===================== -->
+<section id="done" hidden>
+  <h1 id="headline">Time.</h1>
+  <p class="sub" id="verdictline"></p>
+
+  <div class="stats">
+    <div class="stat"><b id="rCorrect">0</b><span>solved</span></div>
+    <div class="stat"><b id="rAcc">0%</b><span>accuracy</span></div>
+    <div class="stat"><b id="rPace">–</b><span>avg per question</span></div>
+  </div>
+
+
+  <h2>Pace</h2>
+  <p class="sub" id="paceline" style="margin:0"></p>
+  <div class="chartbox" id="pacechart"></div>
+  <div class="legend" id="pacelegend" hidden>
+    <span><i class="ok"></i>solved</span><span><i class="no"></i>missed or skipped</span>
+    <span><i class="tgt"></i>5:00 exam-pace target</span>
+  </div>
+  <details class="fold" id="pacefold">
+    <summary>Question by question</summary>
+    <div class="tablebox">
+      <table id="bytime"><thead><tr>
+        <th>#</th><th>Topic</th><th>Level</th><th class="num">Time</th><th>Result</th>
+      </tr></thead><tbody></tbody></table>
+    </div>
+  </details>
+
+  <h2>By difficulty</h2>
+  <div class="tablebox">
+    <table id="bylevel"><thead><tr>
+      <th>Level</th><th class="num">Right</th><th class="num">Tried</th><th class="num">Points</th>
+    </tr></thead><tbody></tbody></table>
+  </div>
+
+  <h2>By topic</h2>
+  <div class="tablebox">
+    <table id="bytopic"><thead><tr>
+      <th>Topic</th><th>Section</th><th class="num">Right</th><th class="num">Tried</th><th class="num">Points</th>
+    </tr></thead><tbody></tbody></table>
+  </div>
+
+
+  <div id="missedwrap"><h2>Worth a second look</h2><p class="sub" style="margin:0">Each miss has a worked solution with your numbers.</p><ol class="missed" id="missed"></ol></div>
+
+  <div class="btnrow">
+    <button id="again">Run it again</button>
+    <button id="back" class="ghost">Change settings</button>
+    <button id="toProg2" class="ghost">Your progress</button>
+  </div>
+  <div class="best" id="bestline2"></div>
+</section>
+
+<!-- ===================== A PAST SESSION ===================== -->
+<section id="sess" hidden>
+  <h1 id="sesshead">Session</h1>
+  <p class="sub" id="sessline"></p>
+  <div id="sessmissedwrap"><h2>Misses</h2><ol class="missed" id="sessmissed"></ol></div>
+  <p class="sub" id="sessnone" hidden>No misses in this session: nothing to review.</p>
+  <div class="btnrow"><button id="sessback" class="ghost">Back to progress</button></div>
+</section>
+
+<!-- ===================== DIAGNOSTIC: INTRO ===================== -->
+<section id="dgintro" hidden>
+  <h1>Diagnostic</h1>
+  <p class="sub" id="dglast"></p>
+  <p class="fine">Exam-level questions, no clock. Pick an answer, then say how sure you are. Answers, a study list and the concept map come at the end.</p>
+  <div class="field">
+    <p>Length</p>
+    <div class="chips" id="dglen">
+      <div class="chip" data-len="quick" role="button" tabindex="0">Quick · 4 questions ≈ 20 min</div>
+      <div class="chip on" data-len="std" role="button" tabindex="0">Half exam · 6 ≈ 30 min</div>
+      <div class="chip" data-len="full" role="button" tabindex="0">Long · 8 ≈ 40 min</div>
+    </div>
+  </div>
+  <div class="resume" id="dgresume" hidden></div>
+  <div class="btnrow">
+    <button id="dgbegin">Begin diagnostic</button>
+    <button id="dgback" class="ghost">Back</button>
+  </div>
+</section>
+
+<!-- ===================== DIAGNOSTIC ===================== -->
+<section id="dg" hidden>
+  <div class="clock">
+    <div class="dgbar">
+      <div><span class="hw" id="dgnum">Question 1</span></div>
+      <div class="qcount"><span id="dgaim">aim ≈ 1:00</span><b id="dgqt">0:00</b></div>
+    </div>
+    <div class="gauge"><div class="fill" id="dgfill" style="width:0%"></div></div>
+    <p class="fine">Total <span class="inst" id="dgall">0:00</span> · no countdown</p>
+  </div>
+  <div class="qcard" id="dgcard">
+    <div class="qtext" id="dgstem"></div>
+    <div class="xopts" id="dgopts" role="radiogroup" aria-label="Answer choices"></div>
+    <div class="conf" id="dgconf" hidden>
+      <p>How sure are you?</p>
+      <div class="btnrow"><button class="ghost" data-c="1">Guessing</button><button class="ghost" data-c="2">Fairly sure</button><button data-c="3">Certain</button></div>
+    </div>
+  </div>
+  <div class="btnrow xctl">
+    <button id="dgidk" class="ghost">I don’t know</button>
+    <button id="dgend" class="link push">End early</button>
+  </div>
+  <p class="fine">Keys: A–F choose · 1 guessing · 2 fairly sure · 3 certain · 0 I don’t know.</p>
+</section>
+
+<!-- ===================== DIAGNOSTIC: RESULTS ===================== -->
+<section id="dgdone" hidden>
+  <h1 id="dghead">0 / 100</h1>
+  <p class="sub" id="dgline"></p>
+  <div class="stats">
+    <div class="stat"><b id="dgRight">0/0</b><span>right</span></div>
+    <div class="stat"><b id="dgIdk">0</b><span>don’t know</span></div>
+    <div class="stat"><b id="dgCal">–</b><span>right when certain</span></div>
+    <div class="stat"><b id="dgTime">0:00</b><span id="dgTimeOf">time</span></div>
+  </div>
+
+  <h2>Study first</h2>
+  <p class="sub" style="margin:0">Ordered by payoff: how shaky the answer was × how often the concept appears on Exam 2.</p>
+  <div id="dgstudy"></div>
+  <div class="btnrow" id="dgstudyacts">
+    <button id="dgdrillall">Drill these in a sprint</button>
+    <button id="dgretest" class="ghost">Retest just these</button>
+  </div>
+
+  <h2>What your answers say</h2>
+  <ul class="insights" id="dginsights"></ul>
+
+  <h2>Concept map</h2>
+  <p class="sub" style="margin:0" id="dgready"></p>
+  <div class="legend"><span><i class="ok"></i>solid</span><span><i style="background:var(--slate)"></i>shaky</span><span><i class="no"></i>needs work</span><span>dashed: not tested yet · ✓ right · ? guessed · ✗ wrong · – don’t know (today)</span></div>
+  <div id="dgmap"></div>
+
+
+  <h2>Every question</h2>
+  <ol class="missed xrev" id="dgreview"></ol>
+  <div class="btnrow">
+    <button id="dgagain">New diagnostic</button>
+    <button id="dghome" class="ghost">Back to start</button>
+    <button id="toProg4" class="ghost">Your progress</button>
+  </div>
+</section>
+
+<!-- ===================== MOCK EXAM: INTRO ===================== -->
+<section id="xintro" hidden>
+  <h1 id="xititle">Mock Exam 2</h1>
+  <div class="facts">
+    <div class="stat"><b>12</b><span>questions</span></div>
+    <div class="stat"><b>60:00</b><span>minutes</span></div>
+    <div class="stat"><b>100</b><span>points</span></div>
+    <div class="stat"><b id="xiopts">A–F</b><span>choices</span></div>
+  </div>
+  <div class="hardnote"><svg class="ico"><use href="#i-alert"/></svg>
+    <div><b>Harder this term</b><span>This semester's exams are more conceptual than past years. These questions add the twists: set-ups to judge, regions to read, traps from real wrong answers.</span></div></div>
+  <p class="fine" id="xisub">New questions every time, weighted like past Exam 2s (triple integrals most). No calculator; answers are exact.</p>
+  <div class="btnrow">
+    <button id="xbegin" data-tip="Start the 60-minute clock. You can close the page and resume; the clock keeps running.">Begin ▸</button>
+    <button id="xback" class="ghost">Back</button>
+  </div>
+</section>
+
+<!-- ===================== MOCK EXAM ===================== -->
+<section id="exam" hidden>
+  <div class="clock">
+    <div class="xbar">
+      <div class="bigtime" id="xtime">60:00</div>
+      <div class="qcount"><span id="xcount">0 of 12 answered</span><b id="xpace"></b></div>
+    </div>
+    <div class="gauge"><div class="fill" id="xfill"></div></div>
+    <div class="xnote">No calculator · exact answers · 8 points a question</div>
+  </div>
+  <nav class="xnav" id="xnav" aria-label="Questions"></nav>
+  <div class="qcard" id="xcard">
+    <div class="tags"><span class="hw" id="xnum"></span><span class="lvl"><em>8 pts</em></span></div>
+    <div class="qtext" id="xstem"></div>
+    <div class="xopts" id="xopts" role="radiogroup" aria-label="Answer choices"></div>
+  </div>
+  <div class="btnrow xctl">
+    <button id="xprev" class="ghost">Previous</button>
+    <button id="xnext">Next</button>
+    <button id="xflag" class="ghost">Flag</button>
+    <button id="xsubmit" class="ghost push">Submit exam</button>
+  </div>
+  <p class="fine" id="xkeys">Keys: A–F choose (again to clear) · ← → move · G flags.</p>
+</section>
+
+<!--@sheet.html-->
+
+<!--@drill.html-->
+
+<!-- ===================== MOCK EXAM: RESULTS ===================== -->
+<section id="xdone" hidden>
+  <h1 id="xhead">0 / 100</h1>
+  <p class="sub" id="xverdict"></p>
+  <div class="stats">
+    <div class="stat"><b id="xRight">0</b><span>correct of 12</span></div>
+    <div class="stat"><b id="xPct">0%</b><span>score</span></div>
+    <div class="stat"><b id="xUsed">0:00</b><span id="xUsedOf">time used of 60:00</span></div>
+  </div>
+
+  <h2>By topic</h2>
+  <p class="sub" style="margin:0">Weakest first. These tallies go to your progress page, where they add up across mock exams.</p>
+  <div class="tablebox">
+    <table id="xtopics"><thead><tr>
+      <th>Topic</th><th>Question #</th><th class="num">Right</th>
+    </tr></thead><tbody></tbody></table>
+  </div>
+
+  <h2>Concept map</h2>
+  <p class="sub" style="margin:0" id="xready"></p>
+  <div id="xmap"></div>
+  <div class="btnrow tight" id="xmapacts" hidden><button class="link" id="xmapdiag">Check the weak concepts with a diagnostic retest</button></div>
+
+
+  <h2>Review by topic</h2>
+  <p class="sub" style="margin:0">Topics you missed come first. Each miss shows why the choice you picked is tempting and a full solution.</p>
+  <ol class="missed xrev" id="xreview"></ol>
+
+  <details class="fold">
+    <summary>Question by question</summary>
+    <div class="tablebox">
+      <table id="xtable"><thead><tr>
+        <th>#</th><th>Topic</th><th>You</th><th>Key</th><th class="num">Time</th><th class="num">Points</th>
+      </tr></thead><tbody></tbody></table>
+    </div>
+  </details>
+  <div class="btnrow">
+    <button id="xagain">New mock exam</button>
+    <button id="xhome" class="ghost">Back to start</button>
+    <button id="toProg3" class="ghost">Your progress</button>
+  </div>
+</section>
+
+<!-- ===================== PROGRESS ===================== -->
+<section id="prog" hidden>
+  <h1>Your progress</h1>
+  <p class="sub">Every finished session is saved, so the concepts that keep costing you show up
+  across sessions instead of disappearing when you close the page.</p>
+
+  <div id="progempty" hidden>
+    <div class="rules"><p>Nothing saved yet. Finish a diagnostic, a sprint or a mock exam and this page fills in.</p></div>
+  </div>
+
+  <div id="proghas" hidden>
+    <div class="stats">
+      <div class="stat"><b id="pRuns">0</b><span>sessions</span></div>
+      <div class="stat"><b id="pQs">0</b><span>questions</span></div>
+      <div class="stat"><b id="pAcc">0%</b><span>accuracy</span></div>
+      <div class="stat"><b id="pPace">&ndash;</b><span>avg per question</span></div>
+    </div>
+
+    <h2>Exam projection</h2>
+    <div class="panel" id="projpanel"></div>
+    <p class="fine" id="projfine"></p>
+
+    <h2>Concepts to work on</h2>
+    <p class="sub" style="margin:0" id="weakintro">Ranked by cost: a wrong answer counts full, a
+    correct answer that ran past its time budget counts half.</p>
+    <div id="weak"></div>
+    <div class="btnrow" id="drillrow" hidden>
+      <button id="pdrill">Drill these concepts</button>
+    </div>
+
+    <h2>Past sessions</h2>
+    <p class="sub" style="margin:0">Open one to see its misses with solutions.</p>
+    <div class="tablebox">
+      <table id="sesslist"><thead><tr>
+        <th>When</th><th>Mode</th><th class="num">Right</th><th class="num">Misses</th><th></th>
+      </tr></thead><tbody></tbody></table>
+    </div>
+
+    <h2>Accuracy, session by session</h2>
+    <div class="chartbox" id="accchart"></div>
+    <div class="legend"><span><i class="ln"></i>share of questions answered correctly</span></div>
+
+    <h2>Average time per question</h2>
+    <div class="chartbox" id="timechart"></div>
+    <div class="legend">
+      <span><i class="ln"></i>your average</span><span><i class="tgt"></i>5:00 exam-pace target</span>
+    </div>
+
+    <details class="fold">
+      <summary>Every problem type</summary>
+      <div class="tablebox">
+        <table id="alltypes"><thead><tr>
+          <th>Concept</th><th>Section</th><th class="num">Seen</th><th class="num">Right</th>
+          <th class="num">Slow</th><th class="num">Avg</th>
+        </tr></thead><tbody></tbody></table>
+      </div>
+    </details>
+  </div>
+
+  <div id="dprog" hidden>
+    <h2>Diagnostics and concept map</h2>
+    <p class="sub" style="margin:0" id="dprogline"></p>
+    <div class="chartbox" id="dchart"></div>
+    <div class="legend" id="dchartleg"><span><i class="ln"></i>diagnostic score out of 100</span></div>
+    <h3 style="margin:22px 0 4px;font-size:16px">Concept map</h3>
+    <p class="sub" style="margin:0" id="dmapnote"></p>
+    <div id="dprogmap"></div>
+    <details class="fold">
+      <summary>Every concept</summary>
+      <div class="tablebox">
+        <table id="dcons"><thead><tr>
+          <th>Concept</th><th>Status</th><th class="num">Estimate</th><th class="num">Checks</th><th class="num">Time vs aim</th>
+        </tr></thead><tbody></tbody></table>
+      </div>
+    </details>
+    <div id="dmiswrap" hidden>
+      <h3 style="margin:22px 0 4px;font-size:16px">Mistakes you keep making</h3>
+      <p class="sub" style="margin:0">The same wrong idea picked in two or more diagnostics.</p>
+      <ul class="dmis" id="dmis"></ul>
+    </div>
+    <details class="fold" id="dhistfold">
+      <summary>Every diagnostic</summary>
+      <div class="tablebox">
+        <table id="dhist"><thead><tr>
+          <th>When</th><th>Length</th><th class="num">Right</th><th class="num">Don’t know</th><th class="num">Score</th><th class="num">Time</th><th></th>
+        </tr></thead><tbody></tbody></table>
+      </div>
+    </details>
+  </div>
+
+  <div id="aiprog" hidden>
+    <h2>Mistake patterns</h2>
+    <p class="sub" style="margin:0" id="ailine"></p>
+    <p class="fine">Built from every problem you answer. Problems you keep missing are put into your next diagnostics.</p>
+    <div id="aipatwrap" hidden>
+      <h3 style="margin:18px 0 4px;font-size:16px">Patterns found</h3>
+      <ul class="dmis" id="aipats"></ul>
+    </div>
+    <div id="aiqwrap" hidden>
+      <h3 style="margin:18px 0 4px;font-size:16px">Queued for your next diagnostics</h3>
+      <ul class="dmis" id="aiq"></ul>
+    </div>
+    <div id="aitrwrap" hidden>
+      <h3 style="margin:18px 0 4px;font-size:16px">Recurring traps</h3>
+      <ul class="dmis" id="aitr"></ul>
+    </div>
+  </div>
+
+  <div id="drprog" hidden></div>
+
+  <div id="xprog" hidden>
+    <h2>Mock exams</h2>
+    <p class="sub" style="margin:0" id="xprogline"></p>
+    <div class="chartbox" id="xchart"></div>
+    <div class="legend" id="xchartleg"><span><i class="ln"></i>score out of 100</span></div>
+    <h3 style="margin:22px 0 4px;font-size:16px">By exam topic</h3>
+    <p class="sub" style="margin:0">Every mock exam question counts toward its topic. Weakest first.</p>
+    <div class="tablebox">
+      <table id="xtags"><thead><tr>
+        <th>Topic</th><th class="num">Right</th><th>Share right</th>
+      </tr></thead><tbody></tbody></table>
+    </div>
+    <div class="btnrow" id="xdrillrow" hidden><button id="xdrill">Drill these topics</button></div>
+    <details class="fold">
+      <summary>Every mock exam</summary>
+      <div class="tablebox">
+        <table id="xhist"><thead><tr>
+          <th>When</th><th class="num">Correct</th><th class="num">Score</th><th class="num">Time</th><th></th>
+        </tr></thead><tbody></tbody></table>
+      </div>
+    </details>
+  </div>
+
+  <div class="btnrow">
+    <button id="progback" class="ghost">Back</button>
+    <button id="clearhist" class="link">Clear history</button>
+  </div>
+  <p class="fine" id="storenote"></p>
+</section>
+
+</div>

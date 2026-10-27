@@ -1,0 +1,244 @@
+<style>
+  /* ---------- study sheet (sheet.html; opened by openSheet() in drill.js) ---------- */
+  #sheet .shnav{display:flex;flex-wrap:wrap;gap:6px;margin:4px 0 0}
+  #sheet .shnav button{font-family:var(--mono);font-size:12.5px;font-weight:500;padding:6px 12px;min-height:34px;background:transparent;
+    color:var(--ink);border:1.5px solid var(--hair);border-radius:999px}
+  #sheet .shnav button:hover{border-color:var(--ink);opacity:1}
+  .shb{border-top:2px solid var(--ink);margin:28px 0 0;padding:12px 0 0;scroll-margin-top:12px}
+  .shh{display:flex;align-items:baseline;flex-wrap:wrap;gap:4px 12px;margin:0 0 6px}
+  .shh i{font-style:normal;font-family:var(--mono);font-size:12px;letter-spacing:.12em;color:var(--graphite)}
+  .shh b{font-size:19px;font-weight:600}
+  .shr{display:grid;grid-template-columns:9em minmax(0,1fr);gap:2px 16px;padding:8px 0;border-bottom:1px solid var(--hair);font-size:15.5px;line-height:1.55}
+  .shr>span{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--graphite);padding-top:4px}
+  .shr>div{min-width:0;overflow-x:auto;overflow-y:hidden}
+  .shr p{margin:0 0 4px} .shr p:last-child{margin:0}
+  #sheet mjx-container[display="true"]{margin:4px 0!important}
+  #sheet mjx-container{max-width:100%}
+  .trap{margin:9px 0 0;font-size:14.5px;line-height:1.45}
+  .trap b{font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--bad);margin-right:8px;white-space:nowrap}
+  .shok{font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--ok);margin-right:8px;white-space:nowrap}
+  .shno{font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--bad);margin-right:8px;white-space:nowrap}
+  .shtabbox{overflow-x:auto;margin:6px 0 2px}
+  table.shtab{width:100%;border-collapse:collapse;font-size:15px;margin:0}
+  table.shtab th,table.shtab td{padding:7px 10px 7px 0;border-bottom:1px solid var(--hair);text-align:left;vertical-align:top;white-space:nowrap}
+  table.shtab th{font-family:var(--mono);font-size:11px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--graphite)}
+  table.shtab td:first-child{color:var(--graphite)}
+  ul.shdec{list-style:none;margin:4px 0 0;padding:0}
+  ul.shdec li{display:flex;flex-wrap:wrap;align-items:baseline;gap:2px 10px;padding:6px 0;border-bottom:1px solid var(--hair);font-size:15px}
+  ul.shdec li>span{flex:1 1 16em;min-width:0}
+  ul.shdec li>b{font-family:var(--mono);font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;white-space:nowrap}
+  ul.shdec li>b::before{content:'→ ';color:var(--graphite)}
+  ol.shsteps{margin:2px 0 0;padding-left:20px} ol.shsteps li{margin:0 0 3px}
+  #sheet details.fold{margin-top:8px}
+  @media (max-width:620px){
+    .shr{grid-template-columns:minmax(0,1fr);padding:7px 0}
+    .shr>span{padding-top:0}
+    .shr{font-size:15px}
+    table.shtab td,table.shtab th{padding-right:8px;font-size:14px}
+  }
+</style>
+
+<!-- ===================== STUDY SHEET ===================== -->
+<section id="sheet" hidden>
+  <h1>Study sheet</h1>
+  <nav class="shnav" aria-label="Topics">
+    <button type="button" data-go="sh158" data-tip="Lagrange multipliers">15.8</button>
+    <button type="button" data-go="sh161" data-tip="Double integrals, order, polar">16.1–3</button>
+    <button type="button" data-go="sh164" data-tip="Triple integrals">16.4</button>
+    <button type="button" data-go="sh165" data-tip="Cylindrical and spherical coordinates">16.5</button>
+    <button type="button" data-go="sh166" data-tip="Mass, moments, centroids">16.6</button>
+    <button type="button" data-go="sh171" data-tip="Vector fields and gradient fields">17.1</button>
+    <button type="button" data-go="sh172" data-tip="Line integrals">17.2</button>
+    <button type="button" data-go="sh173" data-tip="Conservative fields and potentials">17.3</button>
+    <button type="button" data-go="sh174" data-tip="Green’s Theorem, and which tool for a line integral">17.4</button>
+    <button type="button" data-go="sh175" data-tip="Divergence and curl">17.5</button>
+    <button type="button" data-go="sh176" data-tip="Surface area and surface integrals">17.6</button>
+  </nav>
+
+  <!-- 15.8 -->
+  <div class="shb" id="sh158">
+    <div class="shh"><i>15.8</i><b>Lagrange multipliers</b></div>
+    <div class="shr"><span>One constraint</span><div>\(\nabla f=\lambda\nabla g,\quad g(x,y,z)=k\)</div></div>
+    <div class="shr"><span>Two constraints</span><div>\(\nabla f=\lambda\nabla g+\mu\nabla h,\quad g=k,\ h=c\)</div></div>
+    <div class="shr"><span>Recipe</span><div>Solve the system → list <b>every</b> point → evaluate \(f\) at each → largest is the max, smallest the min.</div></div>
+    <div class="shr"><span>Drop λ</span><div>Two variables: \(f_x\,g_y=f_y\,g_x\), together with \(g=k\).</div></div>
+    <div class="shr"><span>Region \(g\le k\)</span><div>Interior points (\(\nabla f=\mathbf 0\)) plus the boundary (Lagrange); compare all values.</div></div>
+    <p class="trap"><b>✕ Trap</b>Stopping at one critical point: check every one and compare the values of \(f\). λ is not the answer.</p>
+    <p class="trap"><b>✕ Trap</b>Dividing by \(x\) or \(y\) loses the cases \(x=0\), \(y=0\): solve those separately.</p>
+  </div>
+
+  <!-- 16.1–16.3 -->
+  <div class="shb" id="sh161">
+    <div class="shh"><i>16.1–16.3</i><b>Double integrals · order · polar</b></div>
+    <div class="shr"><span>Type I / II</span><div>\(\displaystyle\int_a^b\!\!\int_{g_1(x)}^{g_2(x)} f\,dy\,dx\qquad \int_c^d\!\!\int_{h_1(y)}^{h_2(y)} f\,dx\,dy\)</div></div>
+    <div class="shr"><span>Rectangle</span><div>\(\displaystyle\iint_{[a,b]\times[c,d]} g(x)\,h(y)\,dA=\int_a^b g\,dx\cdot\int_c^d h\,dy\)</div></div>
+    <div class="shr"><span>Uses</span><div>Area \(\iint_D dA\) · volume \(\iint_D (z_{\text{top}}-z_{\text{bot}})\,dA\) · average \(\displaystyle\bar f=\frac{1}{A(D)}\iint_D f\,dA\)</div></div>
+    <div class="shr"><span>Reverse order</span><div>When the inner integral has no antiderivative (\(e^{x^2},\ \sin(y^2),\ \sqrt{1+x^3}\)): sketch \(D\), read the bounds the other way.</div></div>
+    <div class="shr"><span>Symmetry</span><div>\(f\) odd in \(x\), \(D\) symmetric about the \(y\)-axis \(\Rightarrow \iint_D f\,dA=0\).</div></div>
+    <div class="shr"><span>Polar</span><div>\(x=r\cos\theta,\ y=r\sin\theta\) · \(x^2+y^2=r^2\) · \(dA=r\,dr\,d\theta\)</div></div>
+    <div class="shr"><span>Polar curves</span><div>
+      <p>\(x^2+y^2=a^2\Rightarrow r=a\)</p>
+      <p>\(x^2+y^2=2ax\Rightarrow r=2a\cos\theta,\ \ -\tfrac{\pi}{2}\le\theta\le\tfrac{\pi}{2}\)</p>
+      <p>\(x^2+y^2=2ay\Rightarrow r=2a\sin\theta,\ \ 0\le\theta\le\pi\)</p>
+      <p>\(y=x\ (x>0)\Rightarrow\theta=\tfrac{\pi}{4}\) · \(x=a\Rightarrow r=a\sec\theta\) · \(y=a\Rightarrow r=a\csc\theta\)</p></div></div>
+    <div class="shr"><span>Go polar</span><div>Disk, annulus, sector, or \(x^2+y^2\) in \(f\).</div></div>
+    <p class="trap"><b>✕ Trap</b>Forgetting the \(r\) in \(dA=r\,dr\,d\theta\).</p>
+    <p class="trap"><b>✕ Trap</b>Outer limits must be numbers; inner limits may use only the outer variable. Sketch before reversing.</p>
+    <p class="trap"><b>✕ Trap</b>\(r=2a\cos\theta\) with \(0\le\theta\le2\pi\) traces the circle twice.</p>
+  </div>
+
+  <!-- 16.4 -->
+  <div class="shb" id="sh164">
+    <div class="shh"><i>16.4</i><b>Triple integrals</b></div>
+    <div class="shr"><span>z-simple</span><div>\(\displaystyle\iiint_E f\,dV=\iint_D\left[\int_{u_1(x,y)}^{u_2(x,y)} f\,dz\right]dA\), \(D\) = shadow of \(E\) on the \(xy\)-plane</div></div>
+    <div class="shr"><span>Volume</span><div>\(V=\iiint_E dV\)</div></div>
+    <div class="shr"><span>Shadow</span><div>Where top meets bottom: set \(u_1(x,y)=u_2(x,y)\).</div></div>
+    <div class="shr"><span>Tetrahedron</span><div>\(\tfrac xa+\tfrac yb+\tfrac zc\le1\), first octant: \(0\le z\le c\big(1-\tfrac xa-\tfrac yb\big)\), \(0\le y\le b\big(1-\tfrac xa\big)\), \(0\le x\le a\) · \(V=\tfrac{abc}{6}\)</div></div>
+    <div class="shr"><span>New order</span><div>Draw the shadow on the plane of the two outer variables; the innermost runs between the two bounding surfaces.</div></div>
+    <p class="trap"><b>✕ Trap</b>A bound that uses its own variable or an inner one: each bound may use only the variables outside it.</p>
+    <p class="trap"><b>✕ Trap</b>Taking the shadow from \(z=0\) when the bottom surface is not \(z=0\).</p>
+  </div>
+
+  <!-- 16.5 -->
+  <div class="shb" id="sh165">
+    <div class="shh"><i>16.5</i><b>Cylindrical &amp; spherical</b></div>
+    <div class="shtabbox"><table class="shtab">
+      <thead><tr><th></th><th>Cylindrical<br>\((r,\theta,z)\)</th><th>Spherical<br>\((\rho,\varphi,\theta)\)</th></tr></thead>
+      <tbody>
+        <tr><td>\(x\)</td><td>\(r\cos\theta\)</td><td>\(\rho\sin\varphi\cos\theta\)</td></tr>
+        <tr><td>\(y\)</td><td>\(r\sin\theta\)</td><td>\(\rho\sin\varphi\sin\theta\)</td></tr>
+        <tr><td>\(z\)</td><td>\(z\)</td><td>\(\rho\cos\varphi\)</td></tr>
+        <tr><td>link</td><td>\(r^2=x^2+y^2\)</td><td>\(\rho^2=x^2+y^2+z^2\)<br>\(r=\rho\sin\varphi\)</td></tr>
+        <tr><td>\(dV\)</td><td>\(r\,dz\,dr\,d\theta\)</td><td>\(\rho^2\sin\varphi\,d\rho\,d\varphi\,d\theta\)</td></tr>
+        <tr><td>range</td><td>\(r\ge0\)<br>\(0\le\theta\le2\pi\)</td><td>\(\rho\ge0,\ 0\le\varphi\le\pi\)<br>\(0\le\theta\le2\pi\)</td></tr>
+      </tbody></table></div>
+    <div class="shr"><span>Which system?</span><div><ul class="shdec">
+      <li><span>Box, planes, tetrahedron</span><b>rectangular</b></li>
+      <li><span>Cylinder \(x^2+y^2=a^2\), paraboloid \(z=x^2+y^2\), cone cut by a plane, \(x^2+y^2\) in \(f\)</span><b>cylindrical</b></li>
+      <li><span>Ball, sphere, cone capped by a sphere, \(x^2+y^2+z^2\) in \(f\)</span><b>spherical</b></li>
+      <li><span>Round about the \(x\)- or \(y\)-axis (e.g. \(y^2+z^2\))</span><b>that axis plays \(z\)</b></li>
+    </ul></div></div>
+    <div class="shr"><span>Sphere</span><div>\(x^2+y^2+z^2=a^2\iff\rho=a\) · ball volume \(\tfrac43\pi a^3\)</div></div>
+    <div class="shr"><span>Cone \(z=kr\)</span><div>\(z=k\sqrt{x^2+y^2}\ (k>0)\iff\varphi=\arctan\tfrac1k\): \(z=r\Rightarrow\tfrac{\pi}{4}\), \(z=\sqrt3\,r\Rightarrow\tfrac{\pi}{6}\), \(z=\tfrac{r}{\sqrt3}\Rightarrow\tfrac{\pi}{3}\)</div></div>
+    <div class="shr"><span>Plane \(z=c\)</span><div>\(c>0\): \(\rho\cos\varphi=c\iff\rho=c\sec\varphi\)</div></div>
+    <div class="shr"><span>\(\rho=c\cos\varphi\)</span><div>Sphere of diameter \(c\) sitting on the origin: \(x^2+y^2+\big(z-\tfrac c2\big)^2=\tfrac{c^2}{4}\), \(0\le\varphi\le\tfrac{\pi}{2}\)</div></div>
+    <div class="shr"><span>Cylinder \(r=a\)</span><div>\(\rho\sin\varphi=a\iff\rho=a\csc\varphi\)</div></div>
+    <details class="fold"><summary>Same surfaces in cylindrical</summary>
+      <div class="shr"><span>Cylindrical</span><div>Paraboloid \(z=r^2\) · cone \(z=kr\) · sphere \(r^2+z^2=a^2\) · cylinder \(r=a\) · \(x^2+y^2=2ay\iff r=2a\sin\theta\)</div></div>
+    </details>
+    <p class="trap"><b>✕ Trap</b>\(\varphi\) is measured from the \(+z\) axis (\(0\) to \(\pi\)), not from the \(xy\)-plane. Upper half only: \(0\le\varphi\le\tfrac{\pi}{2}\).</p>
+    <p class="trap"><b>✕ Trap</b>Dropping the Jacobian: \(\rho^2\sin\varphi\) in spherical, \(r\) in cylindrical.</p>
+  </div>
+
+  <!-- 16.6 -->
+  <div class="shb" id="sh166">
+    <div class="shh"><i>16.6</i><b>Mass · moments · centroid</b></div>
+    <div class="shr"><span>Lamina</span><div><p>\(\displaystyle m=\iint_D\rho\,dA\) · \(\displaystyle M_x=\iint_D y\,\rho\,dA\) · \(\displaystyle M_y=\iint_D x\,\rho\,dA\)</p><p>\(\displaystyle(\bar x,\bar y)=\Big(\frac{M_y}{m},\frac{M_x}{m}\Big)\)</p></div></div>
+    <div class="shr"><span>Solid</span><div><p>\(\displaystyle m=\iiint_E\rho\,dV\)</p><p>\(\displaystyle \bar x=\frac1m\iiint_E x\rho\,dV\) · \(\displaystyle\bar y=\frac1m\iiint_E y\rho\,dV\) · \(\displaystyle\bar z=\frac1m\iiint_E z\rho\,dV\)</p></div></div>
+    <div class="shr"><span>Centroid</span><div>\(\rho\) constant: pure geometry. Symmetry gives coordinates for free (\(\bar x=0\) for a region symmetric about the \(y\)-axis).</div></div>
+    <div class="shr"><span>Know these</span><div>
+      <p>Half-disk radius \(R\), \(y\ge0\): \(\bar y=\dfrac{4R}{3\pi}\) · quarter disk: \(\bar x=\bar y=\dfrac{4R}{3\pi}\)</p>
+      <p>Solid hemisphere radius \(a\), \(z\ge0\): \(\bar z=\dfrac{3a}{8}\) · solid cone height \(h\): \(\tfrac h4\) above the base</p></div></div>
+    <details class="fold"><summary>Moments of inertia</summary>
+      <div class="shr"><span>Inertia</span><div>\(I_x=\iint_D y^2\rho\,dA\) · \(I_y=\iint_D x^2\rho\,dA\) · \(I_0=I_x+I_y=\iint_D(x^2+y^2)\rho\,dA\)</div></div>
+    </details>
+    <p class="trap"><b>✕ Trap</b>\(M_x\) uses \(y\) (distance from the \(x\)-axis); \(M_y\) uses \(x\).</p>
+    <p class="trap"><b>✕ Trap</b>Dividing by the area instead of the mass when \(\rho\) is not constant.</p>
+    <p class="trap"><b>✕ Trap</b>Using symmetry when only the region, not the density, is symmetric.</p>
+  </div>
+
+  <!-- 17.1 -->
+  <div class="shb" id="sh171">
+    <div class="shh"><i>17.1</i><b>Vector fields</b></div>
+    <div class="shr"><span>Gradient field</span><div>\(\mathbf F=\nabla f\): perpendicular to the level curves of \(f\), points toward larger \(f\), longer where level curves crowd.</div></div>
+    <div class="shr"><span>Patterns</span><div>\(\langle x,y\rangle\) straight out · \(\langle -y,x\rangle\) counterclockwise circles · \(\langle y,-x\rangle\) clockwise</div></div>
+    <div class="shr"><span>Flow line</span><div>\(\mathbf r'(t)=\mathbf F(\mathbf r(t))\)</div></div>
+    <p class="trap"><b>✕ Trap</b>\(\nabla f\) is perpendicular to level curves, never tangent.</p>
+    <p class="trap"><b>✕ Trap</b>A field that circulates around a loop is not a gradient field.</p>
+  </div>
+
+  <!-- 17.2 -->
+  <div class="shb" id="sh172">
+    <div class="shh"><i>17.2</i><b>Line integrals</b></div>
+    <div class="shr"><span>Scalar</span><div>\(\displaystyle\int_C f\,ds=\int_a^b f(\mathbf r(t))\,|\mathbf r'(t)|\,dt\) · length \(\int_C ds\) · wire mass \(\int_C\rho\,ds\)</div></div>
+    <div class="shr"><span>Vector (work)</span><div>\(\displaystyle\int_C\mathbf F\cdot d\mathbf r=\int_a^b\mathbf F(\mathbf r(t))\cdot\mathbf r'(t)\,dt\) \(\displaystyle=\int_C P\,dx+Q\,dy+R\,dz\)</div></div>
+    <div class="shr"><span>dx only</span><div>\(\displaystyle\int_C f\,dx=\int_a^b f(\mathbf r(t))\,x'(t)\,dt\)</div></div>
+    <div class="shr"><span>Flux (plane)</span><div>\(\displaystyle\int_C\mathbf F\cdot\mathbf n\,ds=\int_C P\,dy-Q\,dx\) (outward \(\mathbf n\), \(C\) counterclockwise)</div></div>
+    <div class="shr"><span>Orientation</span><div>Reversing \(C\) flips \(\int\mathbf F\cdot d\mathbf r\), \(\int f\,dx\), flux. \(\int f\,ds\) does not change.</div></div>
+    <div class="shr"><span>Paths</span><div>
+      <p>Segment \(P_0\to P_1\): \(\mathbf r(t)=(1-t)P_0+tP_1,\ 0\le t\le1\)</p>
+      <p>Circle radius \(a\), counterclockwise: \(\langle a\cos t,\,a\sin t\rangle,\ 0\le t\le2\pi\) · graph: \(\langle x,\,g(x)\rangle\)</p></div></div>
+    <p class="trap"><b>✕ Trap</b>Forgetting the speed: \(ds=|\mathbf r'(t)|\,dt\).</p>
+    <p class="trap"><b>✕ Trap</b>Running a segment over the \(x\)-range instead of \(0\le t\le1\); piecewise \(C\): add the pieces.</p>
+  </div>
+
+  <!-- 17.3 -->
+  <div class="shb" id="sh173">
+    <div class="shh"><i>17.3</i><b>Conservative fields</b></div>
+    <div class="shr"><span>FTLI</span><div>\(\displaystyle\int_C\nabla f\cdot d\mathbf r=f(\mathbf r(b))-f(\mathbf r(a))\): end minus start; closed \(C\Rightarrow0\)</div></div>
+    <div class="shr"><span>Same thing</span><div>Conservative \(\iff\) path independent \(\iff\oint_C\mathbf F\cdot d\mathbf r=0\) for every closed \(C\)</div></div>
+    <div class="shr"><span>Test</span><div>2D: \(P_y=Q_x\) · 3D: \(\operatorname{curl}\mathbf F=\mathbf 0\) — proves conservative only on a <b>simply connected</b> domain (no holes, e.g. all of \(\mathbb R^2\) or \(\mathbb R^3\)).</div></div>
+    <div class="shr"><span>Vortex</span><div>\(\mathbf F=\Big\langle\dfrac{-y}{x^2+y^2},\dfrac{x}{x^2+y^2}\Big\rangle\): \(P_y=Q_x\), yet \(\oint\mathbf F\cdot d\mathbf r=2\pi\) once counterclockwise around the origin. Not conservative.</div></div>
+    <div class="shr"><span>Potential</span><div><ol class="shsteps">
+      <li>\(f=\int P\,dx+g(y,z)\)</li><li>\(f_y=Q\) gives \(g\) up to \(h(z)\)</li><li>\(f_z=R\) gives \(h\)</li><li>Check \(\nabla f=\mathbf F\)</li></ol></div></div>
+    <p class="trap"><b>✕ Trap</b>Equal cross-partials on a domain with a hole prove nothing.</p>
+    <p class="trap"><b>✕ Trap</b>The constant from \(\int P\,dx\) is a function of \(y\) and \(z\), not a number.</p>
+  </div>
+
+  <!-- 17.4 -->
+  <div class="shb" id="sh174">
+    <div class="shh"><i>17.4</i><b>Green’s Theorem</b></div>
+    <div class="shr"><span>Needs</span><div>\(C\) simple, closed, counterclockwise (\(D\) on the left); \(P,Q\) smooth on all of \(D\).</div></div>
+    <div class="shr"><span>Circulation</span><div>\(\displaystyle\oint_C P\,dx+Q\,dy=\iint_D\big(Q_x-P_y\big)\,dA\)</div></div>
+    <div class="shr"><span>Flux</span><div>\(\displaystyle\oint_C\mathbf F\cdot\mathbf n\,ds=\oint_C P\,dy-Q\,dx\) \(\displaystyle=\iint_D\big(P_x+Q_y\big)\,dA\)</div></div>
+    <div class="shr"><span>Area</span><div>\(\displaystyle A=\oint_C x\,dy=-\oint_C y\,dx=\frac12\oint_C x\,dy-y\,dx\) · ellipse \(\pi ab\)</div></div>
+    <div class="shr"><span>Hole in D</span><div>\(\oint_{\text{outer}}-\oint_{\text{inner}}=\iint_D(Q_x-P_y)\,dA\), both counterclockwise. If \(Q_x-P_y=0\) on \(D\), both loops give the same value.</div></div>
+    <div class="shr"><span>Open curve</span><div>Close it with a segment \(C'\): \(\int_C=\iint_D(Q_x-P_y)\,dA-\int_{C'}\), with \(C\cup C'\) counterclockwise.</div></div>
+    <div class="shr"><span>Which tool?</span><div><ul class="shdec">
+      <li><span>\(\operatorname{curl}\mathbf F=\mathbf 0\) on a simply connected domain</span><b>potential + FTLI</b></li>
+      <li><span>\(C\) closed in the plane, \(\mathbf F\) smooth inside</span><b>Green</b></li>
+      <li><span>\(C\) nearly closed, \(Q_x-P_y\) simple</span><b>close it + Green</b></li>
+      <li><span>Anything else</span><b>parametrize</b></li>
+    </ul></div></div>
+    <p class="trap"><b>✕ Trap</b>Clockwise \(C\) flips the sign: \(-\iint_D(Q_x-P_y)\,dA\).</p>
+    <p class="trap"><b>✕ Trap</b>Writing \(P_y-Q_x\); it is \(Q_x-P_y\).</p>
+    <p class="trap"><b>✕ Trap</b>Using Green with a singularity inside \(D\) (the vortex field around the origin): cut it out first.</p>
+  </div>
+
+  <!-- 17.5 -->
+  <div class="shb" id="sh175">
+    <div class="shh"><i>17.5</i><b>Divergence &amp; curl</b></div>
+    <div class="shr"><span>div (scalar)</span><div>\(\operatorname{div}\mathbf F=\nabla\cdot\mathbf F=P_x+Q_y+R_z\)</div></div>
+    <div class="shr"><span>curl (vector)</span><div>\(\operatorname{curl}\mathbf F=\nabla\times\mathbf F=\big\langle R_y-Q_z,\ P_z-R_x,\ Q_x-P_y\big\rangle\)</div></div>
+    <div class="shr"><span>Identities</span><div>\(\operatorname{curl}(\nabla f)=\mathbf 0\) · \(\operatorname{div}(\operatorname{curl}\mathbf F)=0\) · \(\operatorname{div}(\nabla f)=\nabla^2 f=f_{xx}+f_{yy}+f_{zz}\)</div></div>
+    <div class="shr"><span>So</span><div>\(\operatorname{curl}\mathbf F\ne\mathbf 0\Rightarrow\) not a gradient · \(\operatorname{div}\mathbf F\ne0\Rightarrow\) not a curl</div></div>
+    <div class="shr"><span>Makes sense?</span><div>
+      <p>\(\nabla\) takes a scalar \(f\); div and curl take a vector \(\mathbf F\).</p>
+      <p><span class="shok">✓ Defined</span>\(\nabla f\), \(\operatorname{div}\mathbf F\), \(\operatorname{curl}\mathbf F\), \(\nabla(\operatorname{div}\mathbf F)\), \(\operatorname{div}(\nabla f)\), \(\operatorname{curl}(\operatorname{curl}\mathbf F)\)</p>
+      <p><span class="shno">✕ Meaningless</span>\(\operatorname{div}f\), \(\operatorname{curl}f\), \(\nabla\mathbf F\), \(\operatorname{div}(\operatorname{div}\mathbf F)\), \(\operatorname{curl}(\operatorname{div}\mathbf F)\), \(\nabla(\operatorname{curl}\mathbf F)\)</p></div></div>
+    <div class="shr"><span>Meaning</span><div>div \(>0\): source (net outflow), \(<0\): sink · curl: axis of a paddle wheel’s spin; in 2D \((\operatorname{curl}\mathbf F)\cdot\mathbf k=Q_x-P_y\)</div></div>
+    <div class="shr"><span>Green, vector</span><div><p>\(\oint_C\mathbf F\cdot d\mathbf r=\iint_D(\operatorname{curl}\mathbf F)\cdot\mathbf k\,dA\)</p><p>\(\oint_C\mathbf F\cdot\mathbf n\,ds=\iint_D\operatorname{div}\mathbf F\,dA\)</p></div></div>
+    <p class="trap"><b>✕ Trap</b>The middle component of curl is \(P_z-R_x\): the sign flips there.</p>
+    <p class="trap"><b>✕ Trap</b>\(\operatorname{curl}\mathbf F=\mathbf 0\) means conservative only on a simply connected domain.</p>
+  </div>
+
+  <!-- 17.6 -->
+  <div class="shb" id="sh176">
+    <div class="shh"><i>17.6</i><b>Surface area · surface integrals</b></div>
+    <div class="shr"><span>Parametric</span><div><p>\(\mathbf r(u,v)\), \((u,v)\in D\): \(dS=|\mathbf r_u\times\mathbf r_v|\,du\,dv\)</p><p>\(\displaystyle\iint_S f\,dS=\iint_D f(\mathbf r(u,v))\,|\mathbf r_u\times\mathbf r_v|\,dA\)</p></div></div>
+    <div class="shr"><span>Area</span><div>\(\displaystyle A(S)=\iint_D|\mathbf r_u\times\mathbf r_v|\,dA\)</div></div>
+    <div class="shr"><span>Graph z = g</span><div>\(dS=\sqrt{1+g_x^2+g_y^2}\,dA\) over the shadow \(D\)</div></div>
+    <div class="shr"><span>Sphere</span><div>\(\mathbf r=\langle a\sin\varphi\cos\theta,\ a\sin\varphi\sin\theta,\ a\cos\varphi\rangle\): \(dS=a^2\sin\varphi\,d\varphi\,d\theta\), area \(4\pi a^2\)</div></div>
+    <div class="shr"><span>Cylinder</span><div>\(\mathbf r=\langle a\cos\theta,\ a\sin\theta,\ z\rangle\): \(dS=a\,d\theta\,dz\)</div></div>
+    <div class="shr"><span>Cone, paraboloid</span><div>\(z=\sqrt{x^2+y^2}\): \(dS=\sqrt2\,dA\) · \(z=x^2+y^2\): \(dS=\sqrt{1+4r^2}\;r\,dr\,d\theta\)</div></div>
+    <div class="shr"><span>Plane piece</span><div>Normal \(\mathbf n=\langle A,B,C\rangle\), \(C\ne0\), shadow \(D\) in the \(xy\)-plane: \(A(S)=\dfrac{|\mathbf n|}{|C|}\,A(D)\)</div></div>
+    <p class="trap"><b>✕ Trap</b>Dropping the \(a^2\) in \(dS=a^2\sin\varphi\,d\varphi\,d\theta\).</p>
+    <p class="trap"><b>✕ Trap</b>Leaving \(f\) in \(x,y,z\): substitute the surface (\(z=g(x,y)\) or \(\mathbf r(u,v)\)) before integrating over \(D\).</p>
+    <p class="trap"><b>✕ Trap</b>\(|\mathbf r_u\times\mathbf r_v|\) is a length: take the magnitude of the cross product.</p>
+  </div>
+
+  <div class="btnrow">
+    <button id="sheetback" class="ghost" data-tip="Back to the start screen">Back</button>
+    <button id="sheetup" class="link" data-tip="Back to the top of the sheet">Top ↑</button>
+  </div>
+</section>
