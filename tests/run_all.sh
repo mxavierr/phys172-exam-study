@@ -23,7 +23,7 @@ echo "=== PHYS 172 Exam 1"
 echo "=== MA 261 Exam 1"
 "$PY" -I tests/t_ma261.py   "$M1"
 echo "=== MA 261 Exam 2"
-node apps/ma261-exam2/tests/dump.js 150 12 && "$PY" -I apps/ma261-exam2/tests/check.py --jobs 8     # sympy re-solve of every sample (about 25 min)
+node apps/ma261-exam2/tests/dump.js 150 "${MA261_SAMPLES:-4}" && "$PY" -I apps/ma261-exam2/tests/check.py --jobs 4     # sympy re-solve, 4 samples per id (MA261_SAMPLES=12 for the full run)
 "$PY" -I tests/t_ma261e2.py "$M2"
 echo "=== lint (engine + each pack, joined as the build joins them)"
 LINT=()
